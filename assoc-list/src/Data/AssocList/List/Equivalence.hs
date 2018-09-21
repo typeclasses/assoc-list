@@ -4,6 +4,7 @@ import Data.AssocList.Exception
 import Data.AssocList.List.Type
 
 -- base
+import qualified Data.List
 import Prelude (Maybe (..), otherwise)
 
 -- contravariant
@@ -41,3 +42,6 @@ partition eq key (xy@(x, y) : xys)
         | otherwise                = (    yes , xy : no)
   where
     (yes, no) = partition eq key xys
+
+break :: Equivalence a -> a -> AssocList a b -> (AssocList a b, AssocList a b)
+break eq key = Data.List.break (\(x, y) -> getEquivalence eq key x)

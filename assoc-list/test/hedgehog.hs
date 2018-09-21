@@ -236,6 +236,20 @@ prop_list_equivalence_partition = withTests 1 $ property $ do
     partition def 3 l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
     partition def 4 l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
+prop_list_equivalence_break :: Property
+prop_list_equivalence_break = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (4, 'b'), (3, 'c'), (4, 'd')]
+        break = Data.AssocList.List.Equivalence.break
+        def = Data.Functor.Contravariant.defaultEquivalence
+        (*) = (,)
+
+    break def 1 l === [] * [(1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')]
+    break def 2 l === [     (1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')] * []
+    break def 3 l === [     (1, 'a'),    (4, 'b')] * [(3, 'c'), (4, 'd')]
+    break def 4 l === [     (1, 'a')] * [(4, 'b'),    (3, 'c'), (4, 'd')]
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Ord

@@ -54,4 +54,4 @@ partition key (xy@(x, y) : xys)
     (yes, no) = partition key xys
 
 break :: Eq a => a -> AssocList a b -> (AssocList a b, AssocList a b)
-break key = Data.List.break (\(x, y) -> x == key)
+break key = Data.List.break (\(x, y) -> key == x)
