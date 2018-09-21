@@ -248,11 +248,12 @@ prop_list_predicate_lookupFirst = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         lookupFirst = Data.AssocList.List.Predicate.lookupFirst
+        eq x = Predicate (== x)
 
-    lookupFirst (Predicate (== 1)) l === Just 'a'
-    lookupFirst (Predicate (== 2)) l === Just 'b'
-    lookupFirst (Predicate (== 3)) l === Just 'c'
-    lookupFirst (Predicate (== 4)) l === Nothing
+    lookupFirst (eq 1) l === Just 'a'
+    lookupFirst (eq 2) l === Just 'b'
+    lookupFirst (eq 3) l === Just 'c'
+    lookupFirst (eq 4) l === Nothing
 
 prop_list_predicate_lookupAll :: Property
 prop_list_predicate_lookupAll = withTests 1 $ property $ do
@@ -260,11 +261,12 @@ prop_list_predicate_lookupAll = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         lookupAll = Data.AssocList.List.Predicate.lookupAll
+        eq x = Predicate (== x)
 
-    lookupAll (Predicate (== 1)) l === ['a']
-    lookupAll (Predicate (== 2)) l === ['b', 'x']
-    lookupAll (Predicate (== 3)) l === ['c']
-    lookupAll (Predicate (== 4)) l === []
+    lookupAll (eq 1) l === ['a']
+    lookupAll (eq 2) l === ['b', 'x']
+    lookupAll (eq 3) l === ['c']
+    lookupAll (eq 4) l === []
 
 prop_list_predicate_removeFirst :: Property
 prop_list_predicate_removeFirst = withTests 1 $ property $ do
@@ -272,11 +274,12 @@ prop_list_predicate_removeFirst = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         removeFirst = Data.AssocList.List.Predicate.removeFirst
+        eq x = Predicate (== x)
 
-    removeFirst (Predicate (== 1)) l === [(2, 'b'), (2, 'x'), (3, 'c')]
-    removeFirst (Predicate (== 2)) l === [(1, 'a'), (2, 'x'), (3, 'c')]
-    removeFirst (Predicate (== 3)) l === [(1, 'a'), (2, 'b'), (2, 'x')]
-    removeFirst (Predicate (== 4)) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst (eq 1) l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst (eq 2) l === [(1, 'a'), (2, 'x'), (3, 'c')]
+    removeFirst (eq 3) l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeFirst (eq 4) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
 prop_list_predicate_removeAll :: Property
 prop_list_predicate_removeAll = withTests 1 $ property $ do
@@ -284,8 +287,23 @@ prop_list_predicate_removeAll = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         removeAll = Data.AssocList.List.Predicate.removeAll
+        eq x = Predicate (== x)
 
-    removeAll (Predicate (== 1)) l === [(2, 'b'), (2, 'x'), (3, 'c')]
-    removeAll (Predicate (== 2)) l === [(1, 'a'), (3, 'c')]
-    removeAll (Predicate (== 3)) l === [(1, 'a'), (2, 'b'), (2, 'x')]
-    removeAll (Predicate (== 4)) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll (eq 1) l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll (eq 2) l === [(1, 'a'), (3, 'c')]
+    removeAll (eq 3) l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeAll (eq 4) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+prop_list_predicate_partition :: Property
+prop_list_predicate_partition = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        partition = Data.AssocList.List.Predicate.partition
+        eq x = Predicate (== x)
+        (*) = (,)
+
+    partition (eq 1) l === ['a']      * [(2, 'b'), (2, 'x'), (3, 'c')]
+    partition (eq 2) l === ['b', 'x'] * [(1, 'a'), (3, 'c')]
+    partition (eq 3) l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
+    partition (eq 4) l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
