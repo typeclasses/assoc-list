@@ -3,6 +3,7 @@ module Data.AssocList.List.Predicate where
 import Data.AssocList.List.Type
 
 -- base
+import qualified Data.List
 import Prelude (Maybe (..), otherwise)
 
 -- contravariant
@@ -40,3 +41,6 @@ partition key (xy@(x, y) : xys)
         | otherwise                = (    yes , xy : no)
   where
     (yes, no) = partition key xys
+
+break :: Predicate a -> AssocList a b -> (AssocList a b, AssocList a b)
+break key = Data.List.break (\(x, y) -> getPredicate key x)

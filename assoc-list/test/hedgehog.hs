@@ -334,3 +334,17 @@ prop_list_predicate_partition = withTests 1 $ property $ do
     partition (eq 2) l === ['b', 'x'] * [(1, 'a'), (3, 'c')]
     partition (eq 3) l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
     partition (eq 4) l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+prop_list_predicate_break :: Property
+prop_list_predicate_break = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (4, 'b'), (3, 'c'), (4, 'd')]
+        break = Data.AssocList.List.Predicate.break
+        eq x = Predicate (== x)
+        (*) = (,)
+
+    break (eq 1) l === [] * [(1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')]
+    break (eq 2) l === [     (1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')] * []
+    break (eq 3) l === [     (1, 'a'),    (4, 'b')] * [(3, 'c'), (4, 'd')]
+    break (eq 4) l === [     (1, 'a')] * [(4, 'b'),    (3, 'c'), (4, 'd')]
