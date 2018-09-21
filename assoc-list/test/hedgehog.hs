@@ -373,3 +373,16 @@ prop_list_predicate_break = withTests 1 $ property $ do
     break (eq 2) l === [     (1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')] * []
     break (eq 3) l === [     (1, 'a'),    (4, 'b')] * [(3, 'c'), (4, 'd')]
     break (eq 4) l === [     (1, 'a')] * [(4, 'b'),    (3, 'c'), (4, 'd')]
+
+prop_list_predicate_breakPartition :: Property
+prop_list_predicate_breakPartition = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (4, 'b'), (3, 'c'), (4, 'd')]
+        breakPartition = Data.AssocList.List.Predicate.breakPartition
+        eq x = Predicate (== x)
+
+    breakPartition (eq 1) l === ([], ['a'], [(4, 'b'), (3, 'c'), (4, 'd')])
+    breakPartition (eq 2) l === (l, [], [])
+    breakPartition (eq 3) l === ([(1, 'a'), (4, 'b')], ['c'], [(4, 'd')])
+    breakPartition (eq 4) l === ([(1, 'a')], ['b', 'd'], [(3, 'c')])
