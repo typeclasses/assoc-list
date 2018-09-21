@@ -18,9 +18,9 @@ import qualified System.Exit    as Exit
 import qualified System.IO      as IO
 
 -- contravariant
-import Data.Functor.Contravariant
-    ( Comparison (..), Equivalence (..), Predicate (..),
-      defaultComparison, defaultEquivalence )
+import qualified Data.Functor.Contravariant
+import           Data.Functor.Contravariant
+    (Comparison (..), Equivalence (..), Predicate (..))
 
 -- hedgehog
 import           Hedgehog     (Property, forAll, property,
@@ -57,9 +57,9 @@ prop_list_comparison_sortKeys = withTests 1 $ property $ do
 
     let
         sortKeys = Data.AssocList.List.Comparison.sortKeys
+        def = Data.Functor.Contravariant.defaultComparison
 
-    sortKeys defaultComparison
-      [(2, 'b'), (3, 'c'), (2, 'a'), (7, 'd'), (2, 'e'), (1, 'f')]
+    sortKeys def [(2, 'b'), (3, 'c'), (2, 'a'), (7, 'd'), (2, 'e'), (1, 'f')]
       === [(1, 'f'), (2, 'b'), (2, 'a'), (2, 'e'), (3, 'c'), (7, 'd')]
 
 
@@ -163,11 +163,12 @@ prop_list_equivalence_lookupFirst = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         lookupFirst = Data.AssocList.List.Equivalence.lookupFirst
+        def = Data.Functor.Contravariant.defaultEquivalence
 
-    lookupFirst defaultEquivalence 1 l === Just 'a'
-    lookupFirst defaultEquivalence 2 l === Just 'b'
-    lookupFirst defaultEquivalence 3 l === Just 'c'
-    lookupFirst defaultEquivalence 4 l === Nothing
+    lookupFirst def 1 l === Just 'a'
+    lookupFirst def 2 l === Just 'b'
+    lookupFirst def 3 l === Just 'c'
+    lookupFirst def 4 l === Nothing
 
 prop_list_equivalence_lookupAll :: Property
 prop_list_equivalence_lookupAll = withTests 1 $ property $ do
@@ -175,11 +176,12 @@ prop_list_equivalence_lookupAll = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         lookupAll = Data.AssocList.List.Equivalence.lookupAll
+        def = Data.Functor.Contravariant.defaultEquivalence
 
-    lookupAll defaultEquivalence 1 l === ['a']
-    lookupAll defaultEquivalence 2 l === ['b', 'x']
-    lookupAll defaultEquivalence 3 l === ['c']
-    lookupAll defaultEquivalence 4 l === []
+    lookupAll def 1 l === ['a']
+    lookupAll def 2 l === ['b', 'x']
+    lookupAll def 3 l === ['c']
+    lookupAll def 4 l === []
 
 prop_list_equivalence_removeFirst :: Property
 prop_list_equivalence_removeFirst = withTests 1 $ property $ do
@@ -187,11 +189,12 @@ prop_list_equivalence_removeFirst = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         removeFirst = Data.AssocList.List.Equivalence.removeFirst
+        def = Data.Functor.Contravariant.defaultEquivalence
 
-    removeFirst defaultEquivalence 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
-    removeFirst defaultEquivalence 2 l === [(1, 'a'), (2, 'x'), (3, 'c')]
-    removeFirst defaultEquivalence 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
-    removeFirst defaultEquivalence 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst def 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst def 2 l === [(1, 'a'), (2, 'x'), (3, 'c')]
+    removeFirst def 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeFirst def 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
 prop_list_equivalence_removeAll :: Property
 prop_list_equivalence_removeAll = withTests 1 $ property $ do
@@ -199,11 +202,26 @@ prop_list_equivalence_removeAll = withTests 1 $ property $ do
     let
         l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
         removeAll = Data.AssocList.List.Equivalence.removeAll
+        def = Data.Functor.Contravariant.defaultEquivalence
 
-    removeAll defaultEquivalence 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
-    removeAll defaultEquivalence 2 l === [(1, 'a'), (3, 'c')]
-    removeAll defaultEquivalence 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
-    removeAll defaultEquivalence 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll def 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll def 2 l === [(1, 'a'), (3, 'c')]
+    removeAll def 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeAll def 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+prop_list_equivalence_partition :: Property
+prop_list_equivalence_partition = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        partition = Data.AssocList.List.Equivalence.partition
+        def = Data.Functor.Contravariant.defaultEquivalence
+        (*) = (,)
+
+    partition def 1 l === ['a']      * [(2, 'b'), (2, 'x'), (3, 'c')]
+    partition def 2 l === ['b', 'x'] * [(1, 'a'), (3, 'c')]
+    partition def 3 l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
+    partition def 4 l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
 
 --------------------------------------------------------------------------------

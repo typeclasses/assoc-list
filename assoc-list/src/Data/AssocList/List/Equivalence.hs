@@ -32,3 +32,12 @@ removeAll _eq _key l@[]            =  l
 removeAll eq key (xy@(x, y) : xys)
         | getEquivalence eq key x  =       removeAll eq key xys
         | otherwise                =  xy : removeAll eq key xys
+
+-- | @'partition' eq x l = ('lookupAll' eq x l, 'removeAll' eq x l)@
+partition :: Equivalence a -> a -> AssocList a b -> ([b], AssocList a b)
+partition _eq _key l@[]            = ([], l)
+partition eq key (xy@(x, y) : xys)
+        | getEquivalence eq key x  = (y : yes ,      no)
+        | otherwise                = (    yes , xy : no)
+  where
+    (yes, no) = partition eq key xys
