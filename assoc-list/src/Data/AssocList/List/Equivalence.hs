@@ -45,3 +45,23 @@ partition eq key (xy@(x, y) : xys)
 
 break :: Equivalence a -> a -> AssocList a b -> (AssocList a b, AssocList a b)
 break eq key = Data.List.break (\(x, y) -> getEquivalence eq key x)
+
+-- | 'break' on a key, then 'partition' the remainder.
+--
+-- @'breakPartition' eq key l@ separates @l@ into three parts:
+--
+-- 1. The key-value pairs for which the key is /not/ @key@ that
+--    occur in the list *before* the first occurrence of @key@
+--    (@fst ('break' eq key l)@)
+-- 2. All values associated with @key@ (@'lookupAll' eq key l@)
+-- 3. The key-value pairs for which the key is /not/ @key@ that
+--    occur in the list *after* the first occurrence of @key@
+--    (@'removeAll' eq key (snd ('break' eq key l))@)
+breakPartition :: Equivalence a -> a -> AssocList a b
+    -> (AssocList a b, [b], AssocList a b)
+breakPartition eq key l =
+    let
+        (before, l') = break     eq key l
+        (xs, after)  = partition eq key l'
+    in
+        (before, xs, after)

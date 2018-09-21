@@ -58,7 +58,7 @@ break key = Data.List.break (\(x, y) -> key == x)
 
 -- | 'break' on a key, then 'partition' the remainder.
 --
--- @'breakPartition' key l@ separates @l@ into:
+-- @'breakPartition' key l@ separates @l@ into three parts:
 --
 -- 1. The key-value pairs for which the key is /not/ @key@ that
 --    occur in the list *before* the first occurrence of @key@
