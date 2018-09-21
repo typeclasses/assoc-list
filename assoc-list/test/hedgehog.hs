@@ -63,3 +63,51 @@ prop_eq_bang_maybe = withTests 1 $ property $ do
     l !? 2 === Just 'b'
     l !? 3 === Just 'c'
     l !? 4 === Nothing
+
+prop_eq_lookupFirst :: Property
+prop_eq_lookupFirst = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        lookupFirst = Data.AssocList.List.Eq.lookupFirst
+
+    lookupFirst 1 l === Just 'a'
+    lookupFirst 2 l === Just 'b'
+    lookupFirst 3 l === Just 'c'
+    lookupFirst 4 l === Nothing
+
+prop_eq_lookupAll :: Property
+prop_eq_lookupAll = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        lookupAll = Data.AssocList.List.Eq.lookupAll
+
+    lookupAll 1 l === ['a']
+    lookupAll 2 l === ['b', 'x']
+    lookupAll 3 l === ['c']
+    lookupAll 4 l === []
+
+prop_eq_removeFirst :: Property
+prop_eq_removeFirst = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        removeFirst = Data.AssocList.List.Eq.removeFirst
+
+    removeFirst 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst 2 l === [(1, 'a'), (2, 'x'), (3, 'c')]
+    removeFirst 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeFirst 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+prop_eq_removeAll :: Property
+prop_eq_removeAll = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        removeAll = Data.AssocList.List.Eq.removeAll
+
+    removeAll 1 l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll 2 l === [(1, 'a'), (3, 'c')]
+    removeAll 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeAll 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
