@@ -60,5 +60,6 @@ test-suite hedgehog
   build-depends:
       assoc-list
     , base >=4.7 && <5
+    , contravariant
     , doctest
     , hedgehog
