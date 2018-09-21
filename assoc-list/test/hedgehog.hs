@@ -139,6 +139,19 @@ prop_list_eq_removeAll = withTests 1 $ property $ do
     removeAll 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
     removeAll 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
+prop_list_eq_partition :: Property
+prop_list_eq_partition = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        partition = Data.AssocList.List.Eq.partition
+        (*) = (,)
+
+    partition 1 l === ['a']      * [(2, 'b'), (2, 'x'), (3, 'c')]
+    partition 2 l === ['b', 'x'] * [(1, 'a'), (3, 'c')]
+    partition 3 l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
+    partition 4 l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Equivalence

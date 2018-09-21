@@ -42,3 +42,12 @@ removeAll _key l@[]                =  l
 removeAll key (xy@(x, y) : xys)
         | key == x                 =       removeAll key xys
         | otherwise                =  xy : removeAll key xys
+
+-- | @'partition' x l = ('lookupAll' x l, 'removeAll' x l)@
+partition :: Eq a => a -> AssocList a b -> ([b], AssocList a b)
+partition _key l@[]                = ([], l)
+partition key (xy@(x, y) : xys)
+        | key == x                 = (y : yes ,      no)
+        | otherwise                = (    yes , xy : no)
+  where
+    (yes, no) = partition key xys
