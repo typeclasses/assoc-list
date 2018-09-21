@@ -173,3 +173,56 @@ prop_list_equivalence_removeAll = withTests 1 $ property $ do
     removeAll defaultEquivalence 2 l === [(1, 'a'), (3, 'c')]
     removeAll defaultEquivalence 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
     removeAll defaultEquivalence 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+
+--------------------------------------------------------------------------------
+--  Data.AssocList.List.Predicate
+--------------------------------------------------------------------------------
+
+prop_list_predicate_lookupFirst :: Property
+prop_list_predicate_lookupFirst = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        lookupFirst = Data.AssocList.List.Predicate.lookupFirst
+
+    lookupFirst (Predicate (== 1)) l === Just 'a'
+    lookupFirst (Predicate (== 2)) l === Just 'b'
+    lookupFirst (Predicate (== 3)) l === Just 'c'
+    lookupFirst (Predicate (== 4)) l === Nothing
+
+prop_list_predicate_lookupAll :: Property
+prop_list_predicate_lookupAll = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        lookupAll = Data.AssocList.List.Predicate.lookupAll
+
+    lookupAll (Predicate (== 1)) l === ['a']
+    lookupAll (Predicate (== 2)) l === ['b', 'x']
+    lookupAll (Predicate (== 3)) l === ['c']
+    lookupAll (Predicate (== 4)) l === []
+
+prop_list_predicate_removeFirst :: Property
+prop_list_predicate_removeFirst = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        removeFirst = Data.AssocList.List.Predicate.removeFirst
+
+    removeFirst (Predicate (== 1)) l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeFirst (Predicate (== 2)) l === [(1, 'a'), (2, 'x'), (3, 'c')]
+    removeFirst (Predicate (== 3)) l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeFirst (Predicate (== 4)) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+prop_list_predicate_removeAll :: Property
+prop_list_predicate_removeAll = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+        removeAll = Data.AssocList.List.Predicate.removeAll
+
+    removeAll (Predicate (== 1)) l === [(2, 'b'), (2, 'x'), (3, 'c')]
+    removeAll (Predicate (== 2)) l === [(1, 'a'), (3, 'c')]
+    removeAll (Predicate (== 3)) l === [(1, 'a'), (2, 'b'), (2, 'x')]
+    removeAll (Predicate (== 4)) l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
