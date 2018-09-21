@@ -2,6 +2,7 @@
 
 import           Data.AssocList.Exception
 import           Data.AssocList.List.Type
+import qualified Data.AssocList.List.Comparison
 import qualified Data.AssocList.List.Eq
 import qualified Data.AssocList.List.Equivalence
 import qualified Data.AssocList.List.Ord
@@ -17,8 +18,9 @@ import qualified System.Exit    as Exit
 import qualified System.IO      as IO
 
 -- contravariant
-import Data.Functor.Contravariant (Equivalence (..), Predicate (..),
-                                   defaultEquivalence)
+import Data.Functor.Contravariant
+    ( Comparison (..), Equivalence (..), Predicate (..),
+      defaultComparison, defaultEquivalence )
 
 -- hedgehog
 import           Hedgehog     (Property, forAll, property,
@@ -44,6 +46,21 @@ throws a e =
   do
     result <- liftIO (try (return $! a))
     result === Left e
+
+
+--------------------------------------------------------------------------------
+--  Data.AssocList.List.Comparison
+--------------------------------------------------------------------------------
+
+prop_list_comparison_sortKeys :: Property
+prop_list_comparison_sortKeys = withTests 1 $ property $ do
+
+    let
+        sortKeys = Data.AssocList.List.Comparison.sortKeys
+
+    sortKeys defaultComparison
+      [(2, 'b'), (3, 'c'), (2, 'a'), (7, 'd'), (2, 'e'), (1, 'f')]
+      === [(1, 'f'), (2, 'b'), (2, 'a'), (2, 'e'), (3, 'c'), (7, 'd')]
 
 
 --------------------------------------------------------------------------------

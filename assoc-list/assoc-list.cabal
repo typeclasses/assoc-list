@@ -36,6 +36,7 @@ library
     , contravariant
   exposed-modules:
       Data.AssocList.Exception
+    , Data.AssocList.List.Comparison
     , Data.AssocList.List.Eq
     , Data.AssocList.List.Equivalence
     , Data.AssocList.List.Ord
