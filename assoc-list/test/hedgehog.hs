@@ -4,6 +4,7 @@ import           Data.AssocList.Exception
 import           Data.AssocList.List.Type
 import qualified Data.AssocList.List.Eq
 import qualified Data.AssocList.List.Equivalence
+import qualified Data.AssocList.List.Ord
 import qualified Data.AssocList.List.Predicate
 
 -- base
@@ -173,6 +174,20 @@ prop_list_equivalence_removeAll = withTests 1 $ property $ do
     removeAll defaultEquivalence 2 l === [(1, 'a'), (3, 'c')]
     removeAll defaultEquivalence 3 l === [(1, 'a'), (2, 'b'), (2, 'x')]
     removeAll defaultEquivalence 4 l === [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
+
+
+--------------------------------------------------------------------------------
+--  Data.AssocList.List.Ord
+--------------------------------------------------------------------------------
+
+prop_list_ord_sortKeys :: Property
+prop_list_ord_sortKeys = withTests 1 $ property $ do
+
+    let
+        sortKeys = Data.AssocList.List.Ord.sortKeys
+
+    sortKeys [(2, 'b'), (3, 'c'), (2, 'a'), (7, 'd'), (2, 'e'), (1, 'f')]
+      === [(1, 'f'), (2, 'b'), (2, 'a'), (2, 'e'), (3, 'c'), (7, 'd')]
 
 
 --------------------------------------------------------------------------------

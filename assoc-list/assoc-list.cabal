@@ -38,6 +38,7 @@ library
       Data.AssocList.Exception
     , Data.AssocList.List.Eq
     , Data.AssocList.List.Equivalence
+    , Data.AssocList.List.Ord
     , Data.AssocList.List.Predicate
     , Data.AssocList.List.Type
 
