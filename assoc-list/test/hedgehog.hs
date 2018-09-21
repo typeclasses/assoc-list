@@ -165,6 +165,18 @@ prop_list_eq_break = withTests 1 $ property $ do
     break 3 l === [     (1, 'a'),    (4, 'b')] * [(3, 'c'), (4, 'd')]
     break 4 l === [     (1, 'a')] * [(4, 'b'),    (3, 'c'), (4, 'd')]
 
+prop_list_eq_breakPartition :: Property
+prop_list_eq_breakPartition = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (4, 'b'), (3, 'c'), (4, 'd')]
+        breakPartition = Data.AssocList.List.Eq.breakPartition
+
+    breakPartition 1 l === ([], ['a'], [(4, 'b'), (3, 'c'), (4, 'd')])
+    breakPartition 2 l === (l, [], [])
+    breakPartition 3 l === ([(1, 'a'), (4, 'b')], ['c'], [(4, 'd')])
+    breakPartition 4 l === ([(1, 'a')], ['b', 'd'], [(3, 'c')])
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Equivalence

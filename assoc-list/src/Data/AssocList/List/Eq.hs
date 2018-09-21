@@ -55,3 +55,23 @@ partition key (xy@(x, y) : xys)
 
 break :: Eq a => a -> AssocList a b -> (AssocList a b, AssocList a b)
 break key = Data.List.break (\(x, y) -> key == x)
+
+-- | 'break' on a key, then 'partition' the remainder.
+--
+-- @'breakPartition' key l@ separates @l@ into:
+--
+-- 1. The key-value pairs for which the key is /not/ @key@ that
+--    occur in the list *before* the first occurrence of @key@
+--    (@fst ('break' key l)@)
+-- 2. All values associated with @key@ (@'lookupAll' key l@)
+-- 3. The key-value pairs for which the key is /not/ @key@ that
+--    occur in the list *after* the first occurrence of @key@
+--    (@'removeAll' key (snd ('break' key l))@)
+breakPartition :: Eq a => a -> AssocList a b
+    -> (AssocList a b, [b], AssocList a b)
+breakPartition key l =
+    let
+        (before, l') = break     key l
+        (xs, after)  = partition key l'
+    in
+        (before, xs, after)
