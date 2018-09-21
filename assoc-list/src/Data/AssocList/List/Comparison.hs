@@ -3,7 +3,7 @@ module Data.AssocList.List.Comparison where
 import Data.AssocList.List.Type
 
 -- base
-import qualified Data.List as List
+import qualified Data.List
 
 -- contravariant
 import Data.Functor.Contravariant (Comparison (..), contramap)
@@ -13,4 +13,4 @@ sortKeys cmp =
   let
     cmp' = contramap (\(a, b) -> a) cmp
   in
-    List.sortBy (getComparison cmp')
+    Data.List.sortBy (getComparison cmp')

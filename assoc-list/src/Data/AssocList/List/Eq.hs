@@ -5,6 +5,7 @@ import Data.AssocList.List.Type
 
 -- base
 import Control.Exception (throw)
+import qualified Data.List
 import Prelude (Eq (..), Maybe (..), error, otherwise)
 
 (!) :: Eq a => AssocList a b -> a -> b
@@ -51,3 +52,6 @@ partition key (xy@(x, y) : xys)
         | otherwise                = (    yes , xy : no)
   where
     (yes, no) = partition key xys
+
+break :: Eq a => a -> AssocList a b -> (AssocList a b, AssocList a b)
+break key = Data.List.break (\(x, y) -> x == key)

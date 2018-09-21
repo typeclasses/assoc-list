@@ -152,6 +152,19 @@ prop_list_eq_partition = withTests 1 $ property $ do
     partition 3 l === ['c']      * [(1, 'a'), (2, 'b'), (2, 'x')]
     partition 4 l === []         * [(1, 'a'), (2, 'b'), (2, 'x'), (3, 'c')]
 
+prop_list_eq_break :: Property
+prop_list_eq_break = withTests 1 $ property $ do
+
+    let
+        l = [(1, 'a'), (4, 'b'), (3, 'c'), (4, 'd')]
+        break = Data.AssocList.List.Eq.break
+        (*) = (,)
+
+    break 1 l === [] * [(1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')]
+    break 2 l === [     (1, 'a'),    (4, 'b'),    (3, 'c'), (4, 'd')] * []
+    break 3 l === [     (1, 'a'),    (4, 'b')] * [(3, 'c'), (4, 'd')]
+    break 4 l === [     (1, 'a')] * [(4, 'b'),    (3, 'c'), (4, 'd')]
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Equivalence
