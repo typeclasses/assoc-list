@@ -121,8 +121,8 @@ partition _key l@[]                = ([], l)
 partition key (xy@(x, y) : xys)
         | getPredicate key x       = (y : yes ,      no)
         | otherwise                = (    yes , xy : no)
-  where
-    (yes, no) = partition key xys
+    where
+        (yes, no) = partition key xys
 
 -- | Produces a tuple of two results:
 --

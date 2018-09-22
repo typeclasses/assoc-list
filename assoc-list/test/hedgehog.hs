@@ -180,6 +180,74 @@ prop_list_eq_breakPartition = withTests 1 $ property $ do
     breakPartition 3 l === ([(1, a), (4, b)], [c], [(4, d)])
     breakPartition 4 l === ([(1, a)], [b, d], [(3, c)])
 
+prop_list_eq_mapFirst :: Property
+prop_list_eq_mapFirst = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapFirst = Data.AssocList.List.Eq.mapFirst
+
+    mapFirst a negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
+    mapFirst b negate l === [(a,  1), (b, -4), (c,  2), (b, 6)]
+    mapFirst c negate l === [(a,  1), (b,  4), (c, -2), (b, 6)]
+    mapFirst d negate l === [(a,  1), (b,  4), (c,  2), (b, 6)]
+
+prop_list_eq_mapAll :: Property
+prop_list_eq_mapAll = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapAll = Data.AssocList.List.Eq.mapAll
+
+    mapAll a negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]
+    mapAll b negate l === [(a,  1), (b, -4), (c,  2), (b, -6)]
+    mapAll c negate l === [(a,  1), (b,  4), (c, -2), (b,  6)]
+    mapAll d negate l === [(a,  1), (b,  4), (c,  2), (b,  6)]
+
+prop_list_eq_alterFirst :: Property
+prop_list_eq_alterFirst = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        alterFirst = Data.AssocList.List.Eq.alterFirst
+
+    alterFirst a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b, 6)]
+    alterFirst b (fmap negate) l === [(a,  1), (b, -4), (c,  2), (b, 6)]
+    alterFirst c (fmap negate) l === [(a,  1), (b,  4), (c, -2), (b, 6)]
+    alterFirst d (fmap negate) l === [(a,  1), (b,  4), (c,  2), (b, 6)]
+
+    alterFirst a (const Nothing) l === [        (b, 4), (c, 2), (b, 6)]
+    alterFirst b (const Nothing) l === [(a, 1),         (c, 2), (b, 6)]
+    alterFirst c (const Nothing) l === [(a, 1), (b, 4),         (b, 6)]
+    alterFirst d (const Nothing) l === [(a, 1), (b, 4), (c, 2), (b, 6)]
+
+    alterFirst a (const (Just 0)) l === [(a, 0), (b, 4), (c, 2), (b, 6)]
+    alterFirst b (const (Just 0)) l === [(a, 1), (b, 0), (c, 2), (b, 6)]
+    alterFirst c (const (Just 0)) l === [(a, 1), (b, 4), (c, 0), (b, 6)]
+    alterFirst d (const (Just 0)) l === [(a, 1), (b, 4), (c, 2), (b, 6), (d, 0)]
+
+prop_list_eq_alterAll :: Property
+prop_list_eq_alterAll = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        alterAll = Data.AssocList.List.Eq.alterAll
+
+    alterAll a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b,  6)]
+    alterAll b (fmap negate) l === [(a,  1), (b, -4), (b, -6), (c,  2)]
+    alterAll c (fmap negate) l === [(a,  1), (b,  4), (c, -2), (b,  6)]
+    alterAll d (fmap negate) l === [(a,  1), (b,  4), (c,  2), (b,  6)]
+
+    alterAll a (const []) l === [        (b, 4), (c, 2), (b, 6)]
+    alterAll b (const []) l === [(a, 1),         (c, 2)        ]
+    alterAll c (const []) l === [(a, 1), (b, 4),         (b, 6)]
+    alterAll d (const []) l === [(a, 1), (b, 4), (c, 2), (b, 6)]
+
+    alterAll a (const [8,9]) l === [(a, 8), (a, 9), (b, 4), (c, 2), (b, 6)]
+    alterAll b (const [8,9]) l === [(a, 1), (b, 8), (b, 9), (c, 2)]
+    alterAll c (const [8,9]) l === [(a, 1), (b, 4), (c, 8), (c, 9), (b, 6)]
+    alterAll d (const [8,9]) l === [(a, 1), (b, 4), (c, 2), (b, 6), (d, 8), (d, 9)]
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Equivalence

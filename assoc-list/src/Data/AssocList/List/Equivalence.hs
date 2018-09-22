@@ -126,8 +126,8 @@ partition _eq _key l@[]            = ([], l)
 partition eq key (xy@(x, y) : xys)
         | getEquivalence eq key x  = (y : yes ,      no)
         | otherwise                = (    yes , xy : no)
-  where
-    (yes, no) = partition eq key xys
+    where
+        (yes, no) = partition eq key xys
 
 -- | Produces a tuple of two results:
 --
