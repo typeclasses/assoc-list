@@ -1,11 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import           Data.AssocList.List.Concept
-import qualified Data.AssocList.List.Comparison
-import qualified Data.AssocList.List.Eq
-import qualified Data.AssocList.List.Equivalence
-import qualified Data.AssocList.List.Ord
-import qualified Data.AssocList.List.Predicate
+import           Data.AssocList.ListLike.Concept
+import qualified Data.AssocList.ListLike.Comparison
+import qualified Data.AssocList.ListLike.Eq
+import qualified Data.AssocList.ListLike.Equivalence
+import qualified Data.AssocList.ListLike.Ord
+import qualified Data.AssocList.ListLike.Predicate
 
 -- base
 import           GHC.Stack (HasCallStack)
@@ -51,14 +51,14 @@ a = 'a'; b = 'b'; c = 'c'; d = 'd'; e = 'e'; f = 'f'
 
 
 --------------------------------------------------------------------------------
---  Data.AssocList.List.Comparison
+--  Data.AssocList.ListLike.Comparison
 --------------------------------------------------------------------------------
 
 prop_list_comparison_sortKeys :: Property
 prop_list_comparison_sortKeys = withTests 1 $ property $ do
 
     let
-        sortKeys = Data.AssocList.List.Comparison.sortKeys
+        sortKeys = Data.AssocList.ListLike.Comparison.sortKeys
         def = Data.Functor.Contravariant.defaultComparison
 
     sortKeys def [(2, b), (3, c), (2, a), (7, d), (2, e), (1, f)]
@@ -66,7 +66,7 @@ prop_list_comparison_sortKeys = withTests 1 $ property $ do
 
 
 --------------------------------------------------------------------------------
---  Data.AssocList.List.Eq
+--  Data.AssocList.ListLike.Eq
 --------------------------------------------------------------------------------
 
 prop_list_eq_bang :: Property
@@ -74,7 +74,7 @@ prop_list_eq_bang = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        (!) = (Data.AssocList.List.Eq.!)
+        (!) = (Data.AssocList.ListLike.Eq.!)
 
     l ! 1 === a
     l ! 2 === b
@@ -86,7 +86,7 @@ prop_list_eq_bang_maybe = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        (!?) = (Data.AssocList.List.Eq.!?)
+        (!?) = (Data.AssocList.ListLike.Eq.!?)
 
     l !? 1 === Just a
     l !? 2 === Just b
@@ -98,7 +98,7 @@ prop_list_eq_lookupFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupFirst = Data.AssocList.List.Eq.lookupFirst
+        lookupFirst = Data.AssocList.ListLike.Eq.lookupFirst
 
     lookupFirst 1 l === Just a
     lookupFirst 2 l === Just b
@@ -110,7 +110,7 @@ prop_list_eq_lookupAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupAll = Data.AssocList.List.Eq.lookupAll
+        lookupAll = Data.AssocList.ListLike.Eq.lookupAll
 
     lookupAll 1 l === [a]
     lookupAll 2 l === [b, d]
@@ -122,7 +122,7 @@ prop_list_eq_removeFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeFirst = Data.AssocList.List.Eq.removeFirst
+        removeFirst = Data.AssocList.ListLike.Eq.removeFirst
 
     removeFirst 1 l === [(2, b), (2, d), (3, c)]
     removeFirst 2 l === [(1, a), (2, d), (3, c)]
@@ -134,7 +134,7 @@ prop_list_eq_removeAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeAll = Data.AssocList.List.Eq.removeAll
+        removeAll = Data.AssocList.ListLike.Eq.removeAll
 
     removeAll 1 l === [(2, b), (2, d), (3, c)]
     removeAll 2 l === [(1, a), (3, c)]
@@ -146,7 +146,7 @@ prop_list_eq_partition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        partition = Data.AssocList.List.Eq.partition
+        partition = Data.AssocList.ListLike.Eq.partition
         (*) = (,)
 
     partition 1 l === [a]    * [(2, b), (2, d), (3, c)]
@@ -159,7 +159,7 @@ prop_list_eq_break = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        break = Data.AssocList.List.Eq.break
+        break = Data.AssocList.ListLike.Eq.break
         (*) = (,)
 
     break 1 l === [] * [(1, a),    (4, b),    (3, c), (4, d)]
@@ -172,7 +172,7 @@ prop_list_eq_breakPartition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        breakPartition = Data.AssocList.List.Eq.breakPartition
+        breakPartition = Data.AssocList.ListLike.Eq.breakPartition
 
     breakPartition 1 l === ([], [a], [(4, b), (3, c), (4, d)])
     breakPartition 2 l === (l, [], [])
@@ -184,7 +184,7 @@ prop_list_eq_mapFirst = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapFirst = Data.AssocList.List.Eq.mapFirst
+        mapFirst = Data.AssocList.ListLike.Eq.mapFirst
 
     mapFirst a negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
     mapFirst b negate l === [(a,  1), (b, -4), (c,  2), (b, 6)]
@@ -196,7 +196,7 @@ prop_list_eq_mapAll = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapAll = Data.AssocList.List.Eq.mapAll
+        mapAll = Data.AssocList.ListLike.Eq.mapAll
 
     mapAll a negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]
     mapAll b negate l === [(a,  1), (b, -4), (c,  2), (b, -6)]
@@ -208,7 +208,7 @@ prop_list_eq_alterFirst = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        alterFirst = Data.AssocList.List.Eq.alterFirst
+        alterFirst = Data.AssocList.ListLike.Eq.alterFirst
 
     alterFirst a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b, 6)]
     alterFirst b (fmap negate) l === [(a,  1), (b, -4), (c,  2), (b, 6)]
@@ -230,7 +230,7 @@ prop_list_eq_alterAll = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        alterAll = Data.AssocList.List.Eq.alterAll
+        alterAll = Data.AssocList.ListLike.Eq.alterAll
 
     alterAll a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b,  6)]
     alterAll b (fmap negate) l === [(a,  1), (b, -4), (b, -6), (c,  2)]
@@ -249,7 +249,7 @@ prop_list_eq_alterAll = withTests 1 $ property $ do
 
 
 --------------------------------------------------------------------------------
---  Data.AssocList.List.Equivalence
+--  Data.AssocList.ListLike.Equivalence
 --------------------------------------------------------------------------------
 
 prop_list_equivalence_lookupFirst :: Property
@@ -257,7 +257,7 @@ prop_list_equivalence_lookupFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupFirst = Data.AssocList.List.Equivalence.lookupFirst
+        lookupFirst = Data.AssocList.ListLike.Equivalence.lookupFirst
         def = Data.Functor.Contravariant.defaultEquivalence
 
     lookupFirst def 1 l === Just a
@@ -270,7 +270,7 @@ prop_list_equivalence_lookupAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupAll = Data.AssocList.List.Equivalence.lookupAll
+        lookupAll = Data.AssocList.ListLike.Equivalence.lookupAll
         def = Data.Functor.Contravariant.defaultEquivalence
 
     lookupAll def 1 l === [a]
@@ -283,7 +283,7 @@ prop_list_equivalence_removeFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeFirst = Data.AssocList.List.Equivalence.removeFirst
+        removeFirst = Data.AssocList.ListLike.Equivalence.removeFirst
         def = Data.Functor.Contravariant.defaultEquivalence
 
     removeFirst def 1 l === [(2, b), (2, d), (3, c)]
@@ -296,7 +296,7 @@ prop_list_equivalence_removeAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeAll = Data.AssocList.List.Equivalence.removeAll
+        removeAll = Data.AssocList.ListLike.Equivalence.removeAll
         def = Data.Functor.Contravariant.defaultEquivalence
 
     removeAll def 1 l === [(2, b), (2, d), (3, c)]
@@ -309,7 +309,7 @@ prop_list_equivalence_partition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        partition = Data.AssocList.List.Equivalence.partition
+        partition = Data.AssocList.ListLike.Equivalence.partition
         def = Data.Functor.Contravariant.defaultEquivalence
         (*) = (,)
 
@@ -323,7 +323,7 @@ prop_list_equivalence_break = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        break = Data.AssocList.List.Equivalence.break
+        break = Data.AssocList.ListLike.Equivalence.break
         def = Data.Functor.Contravariant.defaultEquivalence
         (*) = (,)
 
@@ -337,7 +337,7 @@ prop_list_equivalence_breakPartition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        breakPartition = Data.AssocList.List.Equivalence.breakPartition
+        breakPartition = Data.AssocList.ListLike.Equivalence.breakPartition
         def = Data.Functor.Contravariant.defaultEquivalence
 
     breakPartition def 1 l === ([], [a], [(4, b), (3, c), (4, d)])
@@ -350,7 +350,7 @@ prop_list_equivalence_mapFirst = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapFirst = Data.AssocList.List.Equivalence.mapFirst
+        mapFirst = Data.AssocList.ListLike.Equivalence.mapFirst
         def = Data.Functor.Contravariant.defaultEquivalence
 
     mapFirst def a negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
@@ -363,7 +363,7 @@ prop_list_equivalence_mapAll = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapAll = Data.AssocList.List.Equivalence.mapAll
+        mapAll = Data.AssocList.ListLike.Equivalence.mapAll
         def = Data.Functor.Contravariant.defaultEquivalence
 
     mapAll def a negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]
@@ -376,7 +376,7 @@ prop_list_equivalence_alterFirst = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        alterFirst = Data.AssocList.List.Equivalence.alterFirst
+        alterFirst = Data.AssocList.ListLike.Equivalence.alterFirst
         def = Data.Functor.Contravariant.defaultEquivalence
 
     alterFirst def a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b, 6)]
@@ -399,7 +399,7 @@ prop_list_equivalence_alterAll = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        alterAll = Data.AssocList.List.Equivalence.alterAll
+        alterAll = Data.AssocList.ListLike.Equivalence.alterAll
         def = Data.Functor.Contravariant.defaultEquivalence
 
     alterAll def a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b,  6)]
@@ -419,21 +419,21 @@ prop_list_equivalence_alterAll = withTests 1 $ property $ do
 
 
 --------------------------------------------------------------------------------
---  Data.AssocList.List.Ord
+--  Data.AssocList.ListLike.Ord
 --------------------------------------------------------------------------------
 
 prop_list_ord_sortKeys :: Property
 prop_list_ord_sortKeys = withTests 1 $ property $ do
 
     let
-        sortKeys = Data.AssocList.List.Ord.sortKeys
+        sortKeys = Data.AssocList.ListLike.Ord.sortKeys
 
     sortKeys [(2, b), (3, c), (2, a), (7, d), (2, e), (1, f)]
       === [(1, f), (2, b), (2, a), (2, e), (3, c), (7, d)]
 
 
 --------------------------------------------------------------------------------
---  Data.AssocList.List.Predicate
+--  Data.AssocList.ListLike.Predicate
 --------------------------------------------------------------------------------
 
 prop_list_predicate_lookupFirst :: Property
@@ -441,7 +441,7 @@ prop_list_predicate_lookupFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupFirst = Data.AssocList.List.Predicate.lookupFirst
+        lookupFirst = Data.AssocList.ListLike.Predicate.lookupFirst
         eq x = Predicate (== x)
 
     lookupFirst (eq 1) l === Just a
@@ -454,7 +454,7 @@ prop_list_predicate_lookupAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        lookupAll = Data.AssocList.List.Predicate.lookupAll
+        lookupAll = Data.AssocList.ListLike.Predicate.lookupAll
         eq x = Predicate (== x)
 
     lookupAll (eq 1) l === [a]
@@ -467,7 +467,7 @@ prop_list_predicate_removeFirst = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeFirst = Data.AssocList.List.Predicate.removeFirst
+        removeFirst = Data.AssocList.ListLike.Predicate.removeFirst
         eq x = Predicate (== x)
 
     removeFirst (eq 1) l === [(2, b), (2, d), (3, c)]
@@ -480,7 +480,7 @@ prop_list_predicate_removeAll = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        removeAll = Data.AssocList.List.Predicate.removeAll
+        removeAll = Data.AssocList.ListLike.Predicate.removeAll
         eq x = Predicate (== x)
 
     removeAll (eq 1) l === [(2, b), (2, d), (3, c)]
@@ -493,7 +493,7 @@ prop_list_predicate_partition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (2, b), (2, d), (3, c)]
-        partition = Data.AssocList.List.Predicate.partition
+        partition = Data.AssocList.ListLike.Predicate.partition
         eq x = Predicate (== x)
         (*) = (,)
 
@@ -507,7 +507,7 @@ prop_list_predicate_break = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        break = Data.AssocList.List.Predicate.break
+        break = Data.AssocList.ListLike.Predicate.break
         eq x = Predicate (== x)
         (*) = (,)
 
@@ -521,7 +521,7 @@ prop_list_predicate_breakPartition = withTests 1 $ property $ do
 
     let
         l = [(1, a), (4, b), (3, c), (4, d)]
-        breakPartition = Data.AssocList.List.Predicate.breakPartition
+        breakPartition = Data.AssocList.ListLike.Predicate.breakPartition
         eq x = Predicate (== x)
 
     breakPartition (eq 1) l === ([], [a], [(4, b), (3, c), (4, d)])
@@ -534,7 +534,7 @@ prop_list_predicate_mapFirst = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapFirst = Data.AssocList.List.Predicate.mapFirst
+        mapFirst = Data.AssocList.ListLike.Predicate.mapFirst
         eq x = Predicate (== x)
 
     mapFirst (eq a) negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
@@ -547,7 +547,7 @@ prop_list_predicate_mapAll = withTests 1 $ property $ do
 
     let
         l = [(a, 1), (b, 4), (c, 2), (b, 6)]
-        mapAll = Data.AssocList.List.Predicate.mapAll
+        mapAll = Data.AssocList.ListLike.Predicate.mapAll
         eq x = Predicate (== x)
 
     mapAll (eq a) negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]

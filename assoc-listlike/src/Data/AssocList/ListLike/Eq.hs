@@ -1,7 +1,9 @@
--- | Functions on 'AssocList's that make use of an 'Eq' constraint
+{-# LANGUAGE FlexibleContexts, ScopedTypeVariables, ViewPatterns #-}
+
+-- | Functions on association lists that make use of an 'Eq' constraint
 -- on the type of the keys.
 
-module Data.AssocList.List.Eq
+module Data.AssocList.ListLike.Eq
     (
 
     -- * Related modules
@@ -36,13 +38,15 @@ module Data.AssocList.List.Eq
 
     ) where
 
-import Data.AssocList.List.Concept
+import Data.AssocList.ListLike.Concept
 
 -- base
 import Control.Exception (throw)
-import qualified Data.List
-import Data.Maybe (maybeToList)
-import Prelude (Eq (..), Maybe (..), error, otherwise, (++), (<$>))
+import Prelude (Eq (..), Maybe (..), maybe, error, otherwise, (<$>))
+
+-- ListLike
+import Data.ListLike (ListLike, cons, uncons)
+import qualified Data.ListLike as LL
 
 -- $setup
 -- >>> import Prelude (fmap, map, negate, take)
@@ -50,10 +54,10 @@ import Prelude (Eq (..), Maybe (..), error, otherwise, (++), (<$>))
 -- $relatedModules
 -- Some other modules that are a lot like this one:
 --
--- * "Data.AssocList.List.Equivalence" - Functions on 'AssocList's
---   that involve 'Equivalence's on the keys
--- * "Data.AssocList.List.Predicate" - Functions on 'AssocList's
---   that involve 'Predicate's on the keys
+-- * "Data.AssocList.ListLike.Equivalence" - Functions on association
+--   lists that involve 'Equivalence's on the keys
+-- * "Data.AssocList.ListLike.Predicate" - Functions on association
+--   lists that involve 'Predicate's on the keys
 
 -- | Obtain the first value associated with a particular key.
 --
@@ -71,11 +75,12 @@ import Prelude (Eq (..), Maybe (..), error, otherwise, (++), (<$>))
 -- There is a related operator called '!?' which maps the
 -- missing-key condition to 'Nothing' instead.
 
-(!) :: Eq a => AssocList a b -> a -> b
-[] ! key                           = throw MissingAssocListKey
-((x, y) : xys) ! key
-        | key == x                 = y
-        | otherwise                = xys ! key
+(!) :: forall l a b. (ListLike l (a, b), Eq a)
+    => l -> a -> b
+(uncons -> Nothing) ! key               = throw MissingAssocListKey
+(uncons -> Just ((x, y), xys)) ! key
+        | key == x                      = y
+        | otherwise                     = xys ! key
 
 -- | Obtain the first value associated with a particular key, if such
 -- a mapping is present.
@@ -92,7 +97,8 @@ import Prelude (Eq (..), Maybe (..), error, otherwise, (++), (<$>))
 -- This function is the same as 'lookupFirst' but for the order of
 -- its arguments.
 
-(!?) :: Eq a => AssocList a b -> a -> Maybe b
+(!?) :: forall l a b. (ListLike l (a, b), Eq a)
+    => l -> a -> Maybe b
 l !? key = lookupFirst key l
 
 -- | Obtain the first value associated with a particular key, if such
@@ -110,11 +116,12 @@ l !? key = lookupFirst key l
 -- This function is the same as '!?' but for the order of its
 -- arguments.
 
-lookupFirst :: Eq a => a -> AssocList a b -> Maybe b
-lookupFirst _key []                =  Nothing
-lookupFirst key ((x, y) : xys)
-        | key == x                 =  Just y
-        | otherwise                =  lookupFirst key xys
+lookupFirst :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> Maybe b
+lookupFirst _key (uncons -> Nothing)    =  Nothing
+lookupFirst key (uncons -> Just ((x, y), xys))
+        | key == x                      =  Just y
+        | otherwise                     =  lookupFirst key xys
 
 -- | Obtain all values associated with a particular key, in the
 -- order in which the mappings appear in the list.
@@ -122,11 +129,12 @@ lookupFirst key ((x, y) : xys)
 -- >>> lookupAll 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- [2,3,3]
 
-lookupAll :: Eq a => a -> AssocList a b -> [b]
-lookupAll _key []                  =  []
-lookupAll key ((x, y) : xys)
-        | key == x                 =  y : lookupAll key xys
-        | otherwise                =      lookupAll key xys
+lookupAll :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> [b]
+lookupAll _key (uncons -> Nothing)      =  []
+lookupAll key (uncons -> Just ((x, y), xys))
+        | key == x                      =  y : lookupAll key xys
+        | otherwise                     =      lookupAll key xys
 
 -- | Produce a modified version of the association list in which the
 -- first occurrence of a particular key has been removed.
@@ -140,11 +148,12 @@ lookupAll key ((x, y) : xys)
 -- >>> removeFirst 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeFirst :: Eq a => a -> AssocList a b -> AssocList a b
-removeFirst _key l@[]              =  l
-removeFirst key (xy@(x, y) : xys)
-        | key == x                 =  xys
-        | otherwise                =  xy : removeFirst key xys
+removeFirst :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> l
+removeFirst _key l@(uncons -> Nothing)  =  l
+removeFirst key (uncons -> Just (xy@(x, y), xys))
+        | key == x                      =  xys
+        | otherwise                     =  cons xy (removeFirst key xys)
 
 -- | Produce a modified version of the association list in which all
 -- occurrences of a particular key have been removed.
@@ -158,11 +167,12 @@ removeFirst key (xy@(x, y) : xys)
 -- >>> removeAll 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeAll :: Eq a => a -> AssocList a b -> AssocList a b
-removeAll _key l@[]                =  l
-removeAll key (xy@(x, y) : xys)
-        | key == x                 =       removeAll key xys
-        | otherwise                =  xy : removeAll key xys
+removeAll :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> l
+removeAll _key l@(uncons -> Nothing)    =  l
+removeAll key (uncons -> Just (xy@(x, y), xys))
+        | key == x                      =       removeAll key xys
+        | otherwise                     =  cons xy (removeAll key xys)
 
 -- | Produces a tuple of two results:
 --
@@ -174,11 +184,12 @@ removeAll key (xy@(x, y) : xys)
 -- >>> partition 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- ([2,3,3],[('A',1),('C',4)])
 
-partition :: Eq a => a -> AssocList a b -> ([b], AssocList a b)
-partition _key l@[]                = ([], l)
-partition key (xy@(x, y) : xys)
-        | key == x                 = (y : yes ,      no)
-        | otherwise                = (    yes , xy : no)
+partition :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> ([b], l)
+partition _key l@(uncons -> Nothing)    = ([], l)
+partition key (uncons -> Just (xy@(x, y), xys))
+        | key == x                      = (y : yes ,         no)
+        | otherwise                     = (    yes , cons xy no)
     where
         (yes, no) = partition key xys
 
@@ -205,8 +216,9 @@ partition key (xy@(x, y) : xys)
 -- >>> break 'D' [('A',1), ('B',2), ('B',3), ('C',4)]
 -- ([('A',1),('B',2),('B',3),('C',4)],[])
 
-break :: Eq a => a -> AssocList a b -> (AssocList a b, AssocList a b)
-break key = Data.List.break (\(x, y) -> key == x)
+break :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> (l, l)
+break key = LL.break (\(x, y) -> key == x)
 
 -- | 'break' on a key, then 'partition' the remainder.
 --
@@ -229,8 +241,8 @@ break key = Data.List.break (\(x, y) -> key == x)
 -- >>> breakPartition 'D' [('A',1),('B',2),('C',3),('B',4)]
 -- ([('A',1),('B',2),('C',3),('B',4)],[],[])
 
-breakPartition :: Eq a => a -> AssocList a b
-    -> (AssocList a b, [b], AssocList a b)
+breakPartition :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> l -> (l, [b], l)
 breakPartition key l =
     let
         (before, l') = break     key l
@@ -255,15 +267,16 @@ breakPartition key l =
 -- >>> mapFirst 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapFirst :: Eq a => a -> (b -> b) -> AssocList a b -> AssocList a b
+mapFirst :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> (b -> b) -> l -> l
 mapFirst key f l =
     let
         (before, l') = break key l
     in
-        before ++
-        case l' of
-            []              ->  l'
-            (x, y) : after  ->  (x, f y) : after
+        before `LL.append`
+        case (uncons l') of
+            Nothing               ->  l'
+            Just ((x, y), after)  ->  cons (x, f y) after
 
 -- | At each position where a particular key appears in the list,
 -- apply a function to the corresponding value.
@@ -277,9 +290,10 @@ mapFirst key f l =
 -- >>> mapAll 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapAll :: Eq a => a -> (b -> b) -> AssocList a b -> AssocList a b
+mapAll :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> (b -> b) -> l -> l
 mapAll key f =
-    Data.List.map g
+    LL.map g
   where
     g xy@(x, y)
         | key == x   =  (x, f y)
@@ -312,14 +326,16 @@ mapAll key f =
 -- >>> alterFirst 'D' (\_ -> Just 0) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',0)]
 
-alterFirst :: Eq a => a -> (Maybe b -> Maybe b) -- ^ @f@
-                        -> AssocList a b -> AssocList a b
+alterFirst :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> (Maybe b -> Maybe b) -- ^ @f@
+    -> l -> l
 alterFirst key f l =
     let (before, l') = break key l
-    in  before ++ case l' of
-                      []              ->  maybeToList ((,) key <$> f Nothing)
-                      (x, y) : after  ->  maybeToList ((,) x   <$> f (Just y))
-                                          ++ after
+    in  before `LL.append`
+        case LL.uncons l' of
+            Nothing               ->  maybe LL.empty LL.singleton ((,) key <$> f Nothing)
+            Just ((x, y), after)  ->  maybe LL.empty LL.singleton ((,) x   <$> f (Just y))
+                                      `LL.append` after
 
 -- | Modify the list of values that correspond to a particular key.
 --
@@ -354,11 +370,13 @@ alterFirst key f l =
 -- >>> alterAll 'D' (\_ -> [7, 8]) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',7),('D',8)]
 
-alterAll :: Eq a => a -> ([b] -> [b]) -- ^ @f@
-                      -> AssocList a b -> AssocList a b
+alterAll :: forall l a b. (ListLike l (a, b), Eq a)
+    => a -> ([b] -> [b]) -- ^ @f@
+    -> l -> l
 alterAll key f l =
     let (before, l') = break key l
-    in  before ++ case l' of
-                      []  ->  (,) key <$> f []
-                      _   ->  let (ys, after) = partition key l'
-                              in  ((,) key <$> f ys) ++ after
+    in  before `LL.append`
+        case (uncons l') of
+            Nothing  ->  LL.fromList ((,) key <$> f [])
+            _        ->  let (ys, after) = partition key l'
+                         in  LL.fromList ((,) key <$> f ys) `LL.append` after

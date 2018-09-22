@@ -16,7 +16,7 @@ import Data.AssocList.List.Concept
 
 -- base
 import qualified Data.List
-import Prelude (Ord (..), Maybe (..))
+import Prelude (Ord (..))
 
 -- $relatedModules
 -- A module that is a lot like this one:

@@ -1,4 +1,4 @@
-module Data.AssocList.Exception
+module Data.AssocList.ListLike.Concept
     ( MissingAssocListKey (..)
     ) where
 
@@ -8,10 +8,10 @@ import Data.Typeable     (Typeable)
 import Prelude           (Eq, Show)
 
 -- | This exception shows up when one attempts to retrieve a value by key
--- from an associative list using a partial function with a type signature
+-- from an association list using a partial function with a type signature
 -- such as
 --
--- > (!) :: Eq a => AssocList a b -> a -> b
+-- > (!) :: (LikeLike l (a, b), Eq a) => l -> a -> b
 --
 -- but no result can be obtained because the requested key is not present
 -- exists in the mapping.

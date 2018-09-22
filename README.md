@@ -1,6 +1,11 @@
-# assoc-list
+# Association lists
 
 An *association list* is a simple representation of a key-value mapping as a list of key-value pairs. The `assoc-list` package provides functions for working with these kinds of data structures.
+
+## Packages in this project:
+
+* `assoc-list`
+* `assoc-listlike`
 
 ## Related libraries
 
