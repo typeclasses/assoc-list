@@ -37,7 +37,7 @@ module Data.AssocList.List.Eq
     ) where
 
 import Data.AssocList.Exception
-import Data.AssocList.List.Type
+import Data.AssocList.List.Concept
 
 -- base
 import Control.Exception (throw)

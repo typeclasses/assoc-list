@@ -1,4 +1,4 @@
-module Data.AssocList.List.Type
+module Data.AssocList.List.Concept
     ( AssocList
     ) where
 

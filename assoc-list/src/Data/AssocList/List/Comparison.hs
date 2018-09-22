@@ -12,7 +12,7 @@ module Data.AssocList.List.Comparison
 
     ) where
 
-import Data.AssocList.List.Type
+import Data.AssocList.List.Concept
 
 -- base
 import qualified Data.List

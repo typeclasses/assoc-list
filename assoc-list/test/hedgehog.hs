@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 import           Data.AssocList.Exception
-import           Data.AssocList.List.Type
+import           Data.AssocList.List.Concept
 import qualified Data.AssocList.List.Comparison
 import qualified Data.AssocList.List.Eq
 import qualified Data.AssocList.List.Equivalence

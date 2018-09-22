@@ -26,7 +26,7 @@ module Data.AssocList.List.Predicate
 
     ) where
 
-import Data.AssocList.List.Type
+import Data.AssocList.List.Concept
 
 -- base
 import qualified Data.List

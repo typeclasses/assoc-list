@@ -32,7 +32,7 @@ module Data.AssocList.List.Equivalence
     ) where
 
 import Data.AssocList.Exception
-import Data.AssocList.List.Type
+import Data.AssocList.List.Concept
 
 -- base
 import qualified Data.List

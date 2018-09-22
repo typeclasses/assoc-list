@@ -37,11 +37,11 @@ library
   exposed-modules:
       Data.AssocList.Exception
     , Data.AssocList.List.Comparison
+    , Data.AssocList.List.Concept
     , Data.AssocList.List.Eq
     , Data.AssocList.List.Equivalence
     , Data.AssocList.List.Ord
     , Data.AssocList.List.Predicate
-    , Data.AssocList.List.Type
 
 test-suite doctest
   default-language: Haskell2010
