@@ -1,12 +1,34 @@
 -- | Functions on 'AssocList's that make use of an 'Eq' constraint
 -- on the type of the keys.
---
--- Some other modules that are a lot like this one:
---
--- * "Data.AssocList.List.Equivalence"
--- * "Data.AssocList.List.Predicate"
 
-module Data.AssocList.List.Eq where
+module Data.AssocList.List.Eq
+    (
+
+    -- * Related modules
+    -- $relatedModules
+
+    -- * Lookup
+      lookupFirst
+    , lookupAll
+
+    -- * Removal
+    , removeFirst
+    , removeAll
+
+    -- * Grouping
+    , partition
+    , break
+    , breakPartition
+
+    -- * Operators
+    , (!)
+    , (!?)
+
+    -- * Re-exports
+    , AssocList
+    , Eq (..)
+
+    ) where
 
 import Data.AssocList.Exception
 import Data.AssocList.List.Type
@@ -15,6 +37,14 @@ import Data.AssocList.List.Type
 import Control.Exception (throw)
 import qualified Data.List
 import Prelude (Eq (..), Maybe (..), error, otherwise)
+
+-- $relatedModules
+-- Some other modules that are a lot like this one:
+--
+-- * "Data.AssocList.List.Equivalence" - Functions on 'AssocList's
+--   that involve 'Equivalence's on the keys
+-- * "Data.AssocList.List.Predicate" - Functions on 'AssocList's
+--   that involve 'Predicate's on the keys
 
 -- | Obtain the first value associated with a particular key.
 --

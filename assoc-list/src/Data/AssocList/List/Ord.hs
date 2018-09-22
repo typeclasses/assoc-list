@@ -1,4 +1,6 @@
-module Data.AssocList.List.Ord where
+module Data.AssocList.List.Ord
+    ( sortKeys
+    ) where
 
 import Data.AssocList.List.Type
 

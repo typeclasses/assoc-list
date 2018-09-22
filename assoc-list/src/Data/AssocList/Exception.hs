@@ -1,9 +1,11 @@
-module Data.AssocList.Exception where
+module Data.AssocList.Exception
+    ( MissingAssocListKey (..)
+    ) where
 
 -- base
 import Control.Exception (Exception)
-import Data.Typeable (Typeable)
-import Prelude (Eq, Show)
+import Data.Typeable     (Typeable)
+import Prelude           (Eq, Show)
 
 -- | This exception shows up when one attempts to retrieve a value by key
 -- from an associative list using a partial function with a type signature

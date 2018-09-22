@@ -1,11 +1,29 @@
 -- | Functions on 'AssocList's that involve 'Equivalence's on the keys.
---
--- Some other modules that are a lot like this one:
---
--- * "Data.AssocList.List.Eq"
--- * "Data.AssocList.List.Predicate"
 
-module Data.AssocList.List.Equivalence where
+module Data.AssocList.List.Equivalence
+    (
+
+    -- * Related modules
+    -- $relatedModules
+
+    -- * Lookup
+      lookupFirst
+    , lookupAll
+
+    -- * Removal
+    , removeFirst
+    , removeAll
+
+    -- * Grouping
+    , partition
+    , break
+    , breakPartition
+
+    -- * Re-exports
+    , AssocList
+    , Equivalence (..)
+
+    ) where
 
 import Data.AssocList.Exception
 import Data.AssocList.List.Type
@@ -19,6 +37,14 @@ import Data.Functor.Contravariant (Equivalence (..))
 
 -- $setup
 -- >>> import Data.Functor.Contravariant (defaultEquivalence)
+
+-- $relatedModules
+-- Some other modules that are a lot like this one:
+--
+-- * "Data.AssocList.List.Eq" - Functions on 'AssocList's that make
+--   use of an 'Eq' constraint on the type of the keys
+-- * "Data.AssocList.List.Predicate" - Functions on 'AssocList's
+--   that involve 'Predicate's on the keys
 
 -- | Obtain the first value associated with a particular key, if such
 -- a mapping is present.
