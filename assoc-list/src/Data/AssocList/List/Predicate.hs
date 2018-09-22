@@ -14,6 +14,11 @@ module Data.AssocList.List.Predicate
     , removeFirst
     , removeAll
 
+    -- * Mapping
+    -- $mapping
+    , mapFirst
+    , mapAll
+
     -- * Grouping
     , partition
     , break
@@ -25,13 +30,14 @@ import Data.AssocList.List.Type
 
 -- base
 import qualified Data.List
-import Prelude (Maybe (..), otherwise)
+import Data.Maybe (maybeToList)
+import Prelude (Maybe (..), (++), (<$>), otherwise)
 
 -- contravariant
 import Data.Functor.Contravariant (Predicate (..))
 
 -- $setup
--- >>> import Prelude ((==))
+-- >>> import Prelude ((==), negate)
 
 -- $relatedModules
 -- Some other modules that are a lot like this one:
@@ -181,3 +187,50 @@ breakPartition key l =
         (xs, after)  = partition key l'
     in
         (before, xs, after)
+
+-- $mapping
+-- The "map" functions modify values while preserving the structure of
+-- the assocative list. The resulting list has the same size and order
+-- as the original.
+
+-- | At the position where a key satisfying the predicate first appears
+-- in the list, apply a function to the corresponding value.
+--
+-- >>> mapFirst (Predicate (== 'B')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',-4),('C',2),('B',6)]
+--
+-- If no key in the list satisfies the predicate, then the original list is
+-- returned without modification.
+--
+-- >>> mapFirst (Predicate (== 'D')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6)]
+
+mapFirst :: Predicate a -> (b -> b) -> AssocList a b -> AssocList a b
+mapFirst key f l =
+    let
+        (before, l') = break key l
+    in
+        before ++
+        case l' of
+            []              ->  l'
+            (x, y) : after  ->  (x, f y) : after
+
+-- | At each position in the list where the key satisfies the predicate,
+-- apply a function to the corresponding value.
+--
+-- >>> mapAll (Predicate (== 'B')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',-4),('C',2),('B',-6)]
+--
+-- If no key in the list satisfies the predicate, then the original list is
+-- returned without modification.
+--
+-- >>> mapAll (Predicate (== 'D')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6)]
+
+mapAll :: Predicate a -> (b -> b) -> AssocList a b -> AssocList a b
+mapAll key f =
+    Data.List.map g
+  where
+    g xy@(x, y)
+        | getPredicate key x   =  (x, f y)
+        | otherwise            =  xy

@@ -529,3 +529,29 @@ prop_list_predicate_breakPartition = withTests 1 $ property $ do
     breakPartition (eq 2) l === (l, [], [])
     breakPartition (eq 3) l === ([(1, a), (4, b)], [c], [(4, d)])
     breakPartition (eq 4) l === ([(1, a)], [b, d], [(3, c)])
+
+prop_list_predicate_mapFirst :: Property
+prop_list_predicate_mapFirst = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapFirst = Data.AssocList.List.Predicate.mapFirst
+        eq x = Predicate (== x)
+
+    mapFirst (eq a) negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
+    mapFirst (eq b) negate l === [(a,  1), (b, -4), (c,  2), (b, 6)]
+    mapFirst (eq c) negate l === [(a,  1), (b,  4), (c, -2), (b, 6)]
+    mapFirst (eq d) negate l === [(a,  1), (b,  4), (c,  2), (b, 6)]
+
+prop_list_predicate_mapAll :: Property
+prop_list_predicate_mapAll = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapAll = Data.AssocList.List.Predicate.mapAll
+        eq x = Predicate (== x)
+
+    mapAll (eq a) negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]
+    mapAll (eq b) negate l === [(a,  1), (b, -4), (c,  2), (b, -6)]
+    mapAll (eq c) negate l === [(a,  1), (b,  4), (c, -2), (b,  6)]
+    mapAll (eq d) negate l === [(a,  1), (b,  4), (c,  2), (b,  6)]
