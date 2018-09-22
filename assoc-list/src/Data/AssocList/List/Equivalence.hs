@@ -10,6 +10,9 @@ import Prelude (Maybe (..), otherwise)
 -- contravariant
 import Data.Functor.Contravariant (Equivalence (..))
 
+-- $setup
+-- >>> import Data.Functor.Contravariant (defaultEquivalence)
+
 lookupFirst :: Equivalence a -> a -> AssocList a b -> Maybe b
 lookupFirst _eq _key []            =  Nothing
 lookupFirst eq key ((x, y) : xys)
@@ -51,12 +54,22 @@ break eq key = Data.List.break (\(x, y) -> getEquivalence eq key x)
 -- @'breakPartition' eq key l@ separates @l@ into three parts:
 --
 -- 1. The key-value pairs for which the key is /not/ @key@ that
---    occur in the list *before* the first occurrence of @key@
+--    occur in the list /before/ the first occurrence of @key@
 --    (@fst ('break' eq key l)@)
 -- 2. All values associated with @key@ (@'lookupAll' eq key l@)
 -- 3. The key-value pairs for which the key is /not/ @key@ that
---    occur in the list *after* the first occurrence of @key@
+--    occur in the list /after/ the first occurrence of @key@
 --    (@'removeAll' eq key (snd ('break' eq key l))@)
+--
+-- >>> breakPartition defaultEquivalence 'B' [('A',1),('B',2),('C',3),('B',4)]
+-- ([('A',1)],[2,4],[('C',3)])
+--
+-- If the key is not present in the list, then the first part of the
+-- result is the entire list, and the other parts are empty.
+--
+-- >>> breakPartition defaultEquivalence 'D' [('A',1),('B',2),('C',3),('B',4)]
+-- ([('A',1),('B',2),('C',3),('B',4)],[],[])
+
 breakPartition :: Equivalence a -> a -> AssocList a b
     -> (AssocList a b, [b], AssocList a b)
 breakPartition eq key l =
