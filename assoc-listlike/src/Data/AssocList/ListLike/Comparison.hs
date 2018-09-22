@@ -23,7 +23,7 @@ import Prelude ()
 import Data.Functor.Contravariant (Comparison (..), contramap)
 
 -- ListLike
-import Data.ListLike (ListLike, cons, uncons)
+import Data.ListLike (cons, uncons)
 import qualified Data.ListLike as LL
 
 -- $setup
@@ -43,7 +43,7 @@ import qualified Data.ListLike as LL
 -- >>> sortKeys defaultComparison [(2, 'b'), (3, 'c'), (2, 'a'), (4, 'd'), (2, 'e'), (1, 'f')]
 -- [(1,'f'),(2,'b'),(2,'a'),(2,'e'),(3,'c'),(4,'d')]
 
-sortKeys :: forall l a b. ListLike l (a, b)
+sortKeys :: forall l a b. AssocList l a b
     => Comparison a -> l -> l
 sortKeys cmp =
   let

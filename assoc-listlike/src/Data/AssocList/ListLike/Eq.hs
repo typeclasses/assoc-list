@@ -45,7 +45,7 @@ import Control.Exception (throw)
 import Prelude (Eq (..), Maybe (..), maybe, error, otherwise, (<$>))
 
 -- ListLike
-import Data.ListLike (ListLike, cons, uncons)
+import Data.ListLike (cons, uncons)
 import qualified Data.ListLike as LL
 
 -- $setup
@@ -75,7 +75,7 @@ import qualified Data.ListLike as LL
 -- There is a related operator called '!?' which maps the
 -- missing-key condition to 'Nothing' instead.
 
-(!) :: forall l a b. (ListLike l (a, b), Eq a)
+(!) :: forall l a b. (AssocList l a b, Eq a)
     => l -> a -> b
 (uncons -> Nothing) ! key               = throw MissingAssocListKey
 (uncons -> Just ((x, y), xys)) ! key
@@ -97,7 +97,7 @@ import qualified Data.ListLike as LL
 -- This function is the same as 'lookupFirst' but for the order of
 -- its arguments.
 
-(!?) :: forall l a b. (ListLike l (a, b), Eq a)
+(!?) :: forall l a b. (AssocList l a b, Eq a)
     => l -> a -> Maybe b
 l !? key = lookupFirst key l
 
@@ -116,7 +116,7 @@ l !? key = lookupFirst key l
 -- This function is the same as '!?' but for the order of its
 -- arguments.
 
-lookupFirst :: forall l a b. (ListLike l (a, b), Eq a)
+lookupFirst :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> Maybe b
 lookupFirst _key (uncons -> Nothing)    =  Nothing
 lookupFirst key (uncons -> Just ((x, y), xys))
@@ -129,7 +129,7 @@ lookupFirst key (uncons -> Just ((x, y), xys))
 -- >>> lookupAll 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- [2,3,3]
 
-lookupAll :: forall l a b. (ListLike l (a, b), Eq a)
+lookupAll :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> [b]
 lookupAll _key (uncons -> Nothing)      =  []
 lookupAll key (uncons -> Just ((x, y), xys))
@@ -148,7 +148,7 @@ lookupAll key (uncons -> Just ((x, y), xys))
 -- >>> removeFirst 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeFirst :: forall l a b. (ListLike l (a, b), Eq a)
+removeFirst :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> l
 removeFirst _key l@(uncons -> Nothing)  =  l
 removeFirst key (uncons -> Just (xy@(x, y), xys))
@@ -167,7 +167,7 @@ removeFirst key (uncons -> Just (xy@(x, y), xys))
 -- >>> removeAll 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeAll :: forall l a b. (ListLike l (a, b), Eq a)
+removeAll :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> l
 removeAll _key l@(uncons -> Nothing)    =  l
 removeAll key (uncons -> Just (xy@(x, y), xys))
@@ -184,7 +184,7 @@ removeAll key (uncons -> Just (xy@(x, y), xys))
 -- >>> partition 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- ([2,3,3],[('A',1),('C',4)])
 
-partition :: forall l a b. (ListLike l (a, b), Eq a)
+partition :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> ([b], l)
 partition _key l@(uncons -> Nothing)    = ([], l)
 partition key (uncons -> Just (xy@(x, y), xys))
@@ -216,7 +216,7 @@ partition key (uncons -> Just (xy@(x, y), xys))
 -- >>> break 'D' [('A',1), ('B',2), ('B',3), ('C',4)]
 -- ([('A',1),('B',2),('B',3),('C',4)],[])
 
-break :: forall l a b. (ListLike l (a, b), Eq a)
+break :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> (l, l)
 break key = LL.break (\(x, y) -> key == x)
 
@@ -241,7 +241,7 @@ break key = LL.break (\(x, y) -> key == x)
 -- >>> breakPartition 'D' [('A',1),('B',2),('C',3),('B',4)]
 -- ([('A',1),('B',2),('C',3),('B',4)],[],[])
 
-breakPartition :: forall l a b. (ListLike l (a, b), Eq a)
+breakPartition :: forall l a b. (AssocList l a b, Eq a)
     => a -> l -> (l, [b], l)
 breakPartition key l =
     let
@@ -267,7 +267,7 @@ breakPartition key l =
 -- >>> mapFirst 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapFirst :: forall l a b. (ListLike l (a, b), Eq a)
+mapFirst :: forall l a b. (AssocList l a b, Eq a)
     => a -> (b -> b) -> l -> l
 mapFirst key f l =
     let
@@ -290,7 +290,7 @@ mapFirst key f l =
 -- >>> mapAll 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapAll :: forall l a b. (ListLike l (a, b), Eq a)
+mapAll :: forall l a b. (AssocList l a b, Eq a)
     => a -> (b -> b) -> l -> l
 mapAll key f =
     LL.map g
@@ -326,7 +326,7 @@ mapAll key f =
 -- >>> alterFirst 'D' (\_ -> Just 0) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',0)]
 
-alterFirst :: forall l a b. (ListLike l (a, b), Eq a)
+alterFirst :: forall l a b. (AssocList l a b, Eq a)
     => a -> (Maybe b -> Maybe b) -- ^ @f@
     -> l -> l
 alterFirst key f l =
@@ -370,7 +370,7 @@ alterFirst key f l =
 -- >>> alterAll 'D' (\_ -> [7, 8]) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',7),('D',8)]
 
-alterAll :: forall l a b. (ListLike l (a, b), Eq a)
+alterAll :: forall l a b. (AssocList l a b, Eq a)
     => a -> ([b] -> [b]) -- ^ @f@
     -> l -> l
 alterAll key f l =

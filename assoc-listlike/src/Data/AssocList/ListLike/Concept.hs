@@ -1,11 +1,19 @@
+{-# LANGUAGE ConstraintKinds, FlexibleContexts #-}
+
 module Data.AssocList.ListLike.Concept
-    ( MissingAssocListKey (..)
+    ( AssocList
+    , MissingAssocListKey (..)
     ) where
 
 -- base
 import Control.Exception (Exception)
 import Data.Typeable     (Typeable)
 import Prelude           (Eq, Show)
+
+-- ListLike
+import Data.ListLike (ListLike)
+
+type AssocList l a b = ListLike l (a, b)
 
 -- | This exception shows up when one attempts to retrieve a value by key
 -- from an association list using a partial function with a type signature

@@ -43,7 +43,7 @@ import Prelude (Eq (..), Maybe (..), maybe, error, otherwise, (<$>))
 import Data.Functor.Contravariant (Equivalence (..))
 
 -- ListLike
-import Data.ListLike (ListLike, cons, uncons)
+import Data.ListLike (cons, uncons)
 import qualified Data.ListLike as LL
 
 -- $setup
@@ -73,7 +73,7 @@ import qualified Data.ListLike as LL
 -- This function is the same as '!?' but for the order of its
 -- arguments.
 
-lookupFirst :: forall l a b. ListLike l (a, b)
+lookupFirst :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> Maybe b
 lookupFirst _eq _key (uncons -> Nothing)    =  Nothing
 lookupFirst eq key (uncons -> Just ((x, y), xys))
@@ -86,7 +86,7 @@ lookupFirst eq key (uncons -> Just ((x, y), xys))
 -- >>> lookupAll defaultEquivalence 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- [2,3,3]
 
-lookupAll :: forall l a b. ListLike l (a, b)
+lookupAll :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> [b]
 lookupAll _eq _key (uncons -> Nothing)      =  []
 lookupAll eq key (uncons -> Just ((x, y), xys))
@@ -105,7 +105,7 @@ lookupAll eq key (uncons -> Just ((x, y), xys))
 -- >>> removeFirst defaultEquivalence 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeFirst :: forall l a b. ListLike l (a, b)
+removeFirst :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> l
 removeFirst _eq _key l@(uncons -> Nothing)  =  l
 removeFirst eq key (uncons -> Just (xy@(x, y), xys))
@@ -124,7 +124,7 @@ removeFirst eq key (uncons -> Just (xy@(x, y), xys))
 -- >>> removeAll defaultEquivalence 'C' [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeAll :: forall l a b. ListLike l (a, b)
+removeAll :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> l
 removeAll _eq _key l@(uncons -> Nothing)    =  l
 removeAll eq key (uncons -> Just (xy@(x, y), xys))
@@ -141,7 +141,7 @@ removeAll eq key (uncons -> Just (xy@(x, y), xys))
 -- >>> partition defaultEquivalence 'B' [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- ([2,3,3],[('A',1),('C',4)])
 
-partition :: forall l a b. ListLike l (a, b)
+partition :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> ([b], l)
 partition _eq _key l@(uncons -> Nothing)    = ([], l)
 partition eq key (uncons -> Just (xy@(x, y), xys))
@@ -173,7 +173,7 @@ partition eq key (uncons -> Just (xy@(x, y), xys))
 -- >>> break defaultEquivalence 'D' [('A',1), ('B',2), ('B',3), ('C',4)]
 -- ([('A',1),('B',2),('B',3),('C',4)],[])
 
-break :: forall l a b. ListLike l (a, b)
+break :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> (l, l)
 break eq key = LL.break (\(x, y) -> getEquivalence eq key x)
 
@@ -198,7 +198,7 @@ break eq key = LL.break (\(x, y) -> getEquivalence eq key x)
 -- >>> breakPartition defaultEquivalence 'D' [('A',1),('B',2),('C',3),('B',4)]
 -- ([('A',1),('B',2),('C',3),('B',4)],[],[])
 
-breakPartition :: forall l a b. ListLike l (a, b)
+breakPartition :: forall l a b. AssocList l a b
     => Equivalence a -> a -> l -> (l, [b], l)
 breakPartition eq key l =
     let
@@ -224,7 +224,7 @@ breakPartition eq key l =
 -- >>> mapFirst defaultEquivalence 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapFirst :: forall l a b. ListLike l (a, b)
+mapFirst :: forall l a b. AssocList l a b
     => Equivalence a -> a -> (b -> b) -> l -> l
 mapFirst eq key f l =
     let
@@ -247,7 +247,7 @@ mapFirst eq key f l =
 -- >>> mapAll defaultEquivalence 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapAll :: forall l a b. ListLike l (a, b)
+mapAll :: forall l a b. AssocList l a b
     => Equivalence a -> a -> (b -> b) -> l -> l
 mapAll eq key f =
     LL.map g
@@ -283,7 +283,7 @@ mapAll eq key f =
 -- >>> alterFirst defaultEquivalence 'D' (\_ -> Just 0) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',0)]
 
-alterFirst :: forall l a b. ListLike l (a, b)
+alterFirst :: forall l a b. AssocList l a b
     => Equivalence a -> a -> (Maybe b -> Maybe b) -- ^ @f@
     -> l -> l
 alterFirst eq key f l =
@@ -327,7 +327,7 @@ alterFirst eq key f l =
 -- >>> alterAll defaultEquivalence 'D' (\_ -> [7, 8]) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6),('D',7),('D',8)]
 
-alterAll :: forall l a b. ListLike l (a, b)
+alterAll :: forall l a b. AssocList l a b
     => Equivalence a -> a -> ([b] -> [b]) -- ^ @f@
     -> l -> l
 alterAll eq key f l =

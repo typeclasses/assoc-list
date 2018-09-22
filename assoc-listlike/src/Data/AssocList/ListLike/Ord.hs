@@ -21,7 +21,7 @@ import Data.Ord (comparing)
 import Prelude (Ord (..))
 
 -- ListLike
-import Data.ListLike (ListLike, cons, uncons)
+import Data.ListLike (cons, uncons)
 import qualified Data.ListLike as LL
 
 -- $relatedModules
@@ -37,6 +37,6 @@ import qualified Data.ListLike as LL
 -- >>> sortKeys [(2, 'b'), (3, 'c'), (2, 'a'), (4, 'd'), (2, 'e'), (1, 'f')]
 -- [(1,'f'),(2,'b'),(2,'a'),(2,'e'),(3,'c'),(4,'d')]
 
-sortKeys :: forall l a b. (ListLike l (a, b), Ord a)
+sortKeys :: forall l a b. (AssocList l a b, Ord a)
     => l -> l
 sortKeys = LL.sortBy (comparing (\(a, b) -> a))

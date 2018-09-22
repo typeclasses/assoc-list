@@ -35,7 +35,7 @@ import Control.Exception (throw)
 import Prelude (Eq (..), Maybe (..), maybe, error, otherwise, (<$>))
 
 -- ListLike
-import Data.ListLike (ListLike, cons, uncons)
+import Data.ListLike (cons, uncons)
 import qualified Data.ListLike as LL
 
 -- contravariant
@@ -63,7 +63,7 @@ import Data.Functor.Contravariant (Predicate (..))
 -- >>> lookupFirst (Predicate (== 'D')) [('A',1), ('B',2), ('B',3), ('C',4)]
 -- Nothing
 
-lookupFirst :: forall l a b. (ListLike l (a, b))
+lookupFirst :: forall l a b. AssocList l a b
     => Predicate a -> l -> Maybe b
 lookupFirst _key (uncons -> Nothing)    =  Nothing
 lookupFirst key (uncons -> Just ((x, y), xys))
@@ -76,7 +76,7 @@ lookupFirst key (uncons -> Just ((x, y), xys))
 -- >>> lookupAll (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- [2,3,3]
 
-lookupAll :: forall l a b. (ListLike l (a, b))
+lookupAll :: forall l a b. AssocList l a b
     => Predicate a -> l -> [b]
 lookupAll _key (uncons -> Nothing)      =  []
 lookupAll key (uncons -> Just ((x, y), xys))
@@ -95,7 +95,7 @@ lookupAll key (uncons -> Just ((x, y), xys))
 -- >>> removeFirst (Predicate (== 'C')) [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeFirst :: forall l a b. (ListLike l (a, b))
+removeFirst :: forall l a b. AssocList l a b
     => Predicate a -> l -> l
 removeFirst _key l@(uncons -> Nothing)  =  l
 removeFirst key (uncons -> Just (xy@(x, y), xys))
@@ -114,7 +114,7 @@ removeFirst key (uncons -> Just (xy@(x, y), xys))
 -- >>> removeAll (Predicate (== 'C')) [('A',1), ('B',2), ('B',3)]
 -- [('A',1),('B',2),('B',3)]
 
-removeAll :: forall l a b. (ListLike l (a, b))
+removeAll :: forall l a b. AssocList l a b
     => Predicate a -> l -> l
 removeAll _key l@(uncons -> Nothing)    =  l
 removeAll key (uncons -> Just (xy@(x, y), xys))
@@ -131,7 +131,7 @@ removeAll key (uncons -> Just (xy@(x, y), xys))
 -- >>> partition (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
 -- ([2,3,3],[('A',1),('C',4)])
 
-partition :: forall l a b. (ListLike l (a, b))
+partition :: forall l a b. AssocList l a b
     => Predicate a -> l -> ([b], l)
 partition _key l@(uncons -> Nothing)    = ([], l)
 partition key (uncons -> Just (xy@(x, y), xys))
@@ -163,7 +163,7 @@ partition key (uncons -> Just (xy@(x, y), xys))
 -- >>> break (Predicate (== 'D')) [('A',1), ('B',2), ('B',3), ('C',4)]
 -- ([('A',1),('B',2),('B',3),('C',4)],[])
 
-break :: forall l a b. (ListLike l (a, b))
+break :: forall l a b. AssocList l a b
     => Predicate a -> l -> (l, l)
 break key = LL.break (\(x, y) -> getPredicate key x)
 
@@ -190,7 +190,7 @@ break key = LL.break (\(x, y) -> getPredicate key x)
 -- >>> breakPartition (Predicate (== 'D')) [('A',1),('B',2),('C',3),('B',4)]
 -- ([('A',1),('B',2),('C',3),('B',4)],[],[])
 
-breakPartition :: forall l a b. (ListLike l (a, b))
+breakPartition :: forall l a b. AssocList l a b
     => Predicate a -> l -> (l, [b], l)
 breakPartition key l =
     let
@@ -216,7 +216,7 @@ breakPartition key l =
 -- >>> mapFirst (Predicate (== 'D')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapFirst :: forall l a b. (ListLike l (a, b))
+mapFirst :: forall l a b. AssocList l a b
     => Predicate a -> (b -> b) -> l -> l
 mapFirst key f l =
     let
@@ -239,7 +239,7 @@ mapFirst key f l =
 -- >>> mapAll (Predicate (== 'D')) negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
 -- [('A',1),('B',4),('C',2),('B',6)]
 
-mapAll :: forall l a b. (ListLike l (a, b))
+mapAll :: forall l a b. AssocList l a b
     => Predicate a -> (b -> b) -> l -> l
 mapAll key f =
     LL.map g
