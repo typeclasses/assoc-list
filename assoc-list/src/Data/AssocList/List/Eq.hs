@@ -1,5 +1,10 @@
 -- | Functions on 'AssocList's that make use of an 'Eq' constraint
 -- on the type of the keys.
+--
+-- Some other modules that are a lot like this one:
+--
+-- * "Data.AssocList.List.Equivalence"
+-- * "Data.AssocList.List.Predicate"
 
 module Data.AssocList.List.Eq where
 

@@ -1,4 +1,9 @@
 -- | Functions on 'AssocList's that involve 'Predicate's on the keys.
+--
+-- Some other modules that are a lot like this one:
+--
+-- * "Data.AssocList.List.Eq"
+-- * "Data.AssocList.List.Equivalence"
 
 module Data.AssocList.List.Predicate where
 
