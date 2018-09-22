@@ -14,6 +14,16 @@ module Data.AssocList.List.Equivalence
     , removeFirst
     , removeAll
 
+    -- * Mapping
+    -- $mapping
+    , mapFirst
+    , mapAll
+
+    -- * Alteration
+    -- $alteration
+    , alterFirst
+    , alterAll
+
     -- * Grouping
     , partition
     , break
@@ -26,13 +36,15 @@ import Data.AssocList.List.Type
 
 -- base
 import qualified Data.List
-import Prelude (Maybe (..), otherwise)
+import Data.Maybe (maybeToList)
+import Prelude (Maybe (..), (++), (<$>), otherwise)
 
 -- contravariant
 import Data.Functor.Contravariant (Equivalence (..))
 
 -- $setup
 -- >>> import Data.Functor.Contravariant (defaultEquivalence)
+-- >>> import Prelude (fmap, map, negate, take)
 
 -- $relatedModules
 -- Some other modules that are a lot like this one:
@@ -184,3 +196,128 @@ breakPartition eq key l =
         (xs, after)  = partition eq key l'
     in
         (before, xs, after)
+
+-- $mapping
+-- The "map" functions modify values while preserving the structure of
+-- the assocative list. The resulting list has the same size and order
+-- as the original.
+
+-- | At the position where a particular key first appears in the list,
+-- apply a function to the corresponding value.
+--
+-- >>> mapFirst defaultEquivalence 'B' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',-4),('C',2),('B',6)]
+--
+-- If the key does not appear in the list, then the original list is
+-- returned without modification.
+--
+-- >>> mapFirst defaultEquivalence 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6)]
+
+mapFirst :: Equivalence a -> a -> (b -> b) -> AssocList a b -> AssocList a b
+mapFirst eq key f l =
+    let
+        (before, l') = break eq key l
+    in
+        before ++
+        case l' of
+            []              ->  l'
+            (x, y) : after  ->  (x, f y) : after
+
+-- | At each position where a particular key appears in the list,
+-- apply a function to the corresponding value.
+--
+-- >>> mapAll defaultEquivalence 'B' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',-4),('C',2),('B',-6)]
+--
+-- If the key does not appear in the list, then the original list is
+-- returned without modification.
+--
+-- >>> mapAll defaultEquivalence 'D' negate [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6)]
+
+mapAll :: Equivalence a -> a -> (b -> b) -> AssocList a b -> AssocList a b
+mapAll eq key f =
+    Data.List.map g
+  where
+    g xy@(x, y)
+        | getEquivalence eq key x  =  (x, f y)
+        | otherwise                =  xy
+
+-- $alteration
+-- The "alter" functions provide an all-in-one way to do insertion,
+-- modification, and removal.
+
+-- | Insert, modify, or delete a single value corresponding to
+-- the first place where a particular key appears in the list.
+--
+-- __Modification__ - If the key first appears in the list with a
+-- corresponding value of @x@, and @f x = 'Just' x'@, then that value
+-- @x@ will be replaced with @x'@ in the resulting list.
+--
+-- >>> alterFirst defaultEquivalence 'B' (fmap negate) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',-4),('C',2),('B',6)]
+--
+-- __Removal__ - If the key first appears in the list with a corresponding
+-- value of @x@, and @f x = 'Nothing'@, then that mapping will be removed
+-- in the resulting list.
+--
+-- >>> alterFirst defaultEquivalence 'B' (\_ -> Nothing) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('C',2),('B',6)]
+--
+-- __Insertion__ - If the key does not appear in the list and
+-- @f 'Nothing' = 'Just' x@, then @x@ be appended to the /end/ of the list.
+--
+-- >>> alterFirst defaultEquivalence 'D' (\_ -> Just 0) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6),('D',0)]
+
+alterFirst :: Equivalence a -> a -> (Maybe b -> Maybe b) -- ^ @f@
+                            -> AssocList a b -> AssocList a b
+alterFirst eq key f l =
+    let (before, l') = break eq key l
+    in  before ++ case l' of
+                      []              ->  maybeToList ((,) key <$> f Nothing)
+                      (x, y) : after  ->  maybeToList ((,) x   <$> f (Just y))
+                                          ++ after
+
+-- | Modify the list of values that correspond to a particular key.
+--
+-- __Mapping__ - For example, to negate all values of @'B'@:
+--
+-- >>> alterAll defaultEquivalence 'B' (map negate) [('A', 1), ('B', 4), ('B', 5), ('C', 2)]
+-- [('A',1),('B',-4),('B',-5),('C',2)]
+--
+-- __Length alteration__ - For example, to limit the number of occurrences
+-- of 'B' to at most two:
+--
+-- >>> alterAll defaultEquivalence 'B' (take 2) [('A', 1), ('B', 4), ('B', 5), ('B', 6), ('C', 2)]
+-- [('A',1),('B',4),('B',5),('C',2)]
+--
+-- __Removal__ - If @f@ returns an empty list, then the key will be removed
+-- from the list entirely.
+--
+-- >>> alterAll defaultEquivalence 'B' (\_ -> []) [('A', 1), ('B', 4), ('B', 5), ('C', 2)]
+-- [('A',1),('C',2)]
+--
+-- __Reordering__ - The key may appear in multiple noncontiguous positions
+-- in the input list, but all of the new mappings for the key in the output
+-- will be in one contiguous sequence starting at the position where the
+-- key /first/ appears in the input list.
+--
+-- >>> alterAll defaultEquivalence 'B' (map negate) [('A', 1), ('B', 4), ('C', 2), ('B', 5), ('D', 3), ('B', 6)]
+-- [('A',1),('B',-4),('B',-5),('B',-6),('C',2),('D',3)]
+--
+-- __Insertion__ - If the key does not appear in the list, then any result
+-- from @f@ will be appended to the /end/ of the list.
+--
+-- >>> alterAll defaultEquivalence 'D' (\_ -> [7, 8]) [('A', 1), ('B', 4), ('C', 2), ('B', 6)]
+-- [('A',1),('B',4),('C',2),('B',6),('D',7),('D',8)]
+
+alterAll :: Equivalence a -> a -> ([b] -> [b]) -- ^ @f@
+                          -> AssocList a b -> AssocList a b
+alterAll eq key f l =
+    let (before, l') = break eq key l
+    in  before ++ case l' of
+                      []  ->  (,) key <$> f []
+                      _   ->  let (ys, after) = partition eq key l'
+                              in  ((,) key <$> f ys) ++ after

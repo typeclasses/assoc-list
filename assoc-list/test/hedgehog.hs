@@ -346,6 +346,78 @@ prop_list_equivalence_breakPartition = withTests 1 $ property $ do
     breakPartition def 3 l === ([(1, a), (4, b)], [c], [(4, d)])
     breakPartition def 4 l === ([(1, a)], [b, d], [(3, c)])
 
+prop_list_equivalence_mapFirst :: Property
+prop_list_equivalence_mapFirst = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapFirst = Data.AssocList.List.Equivalence.mapFirst
+        def = Data.Functor.Contravariant.defaultEquivalence
+
+    mapFirst def a negate l === [(a, -1), (b,  4), (c,  2), (b, 6)]
+    mapFirst def b negate l === [(a,  1), (b, -4), (c,  2), (b, 6)]
+    mapFirst def c negate l === [(a,  1), (b,  4), (c, -2), (b, 6)]
+    mapFirst def d negate l === [(a,  1), (b,  4), (c,  2), (b, 6)]
+
+prop_list_equivalence_mapAll :: Property
+prop_list_equivalence_mapAll = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        mapAll = Data.AssocList.List.Equivalence.mapAll
+        def = Data.Functor.Contravariant.defaultEquivalence
+
+    mapAll def a negate l === [(a, -1), (b,  4), (c,  2), (b,  6)]
+    mapAll def b negate l === [(a,  1), (b, -4), (c,  2), (b, -6)]
+    mapAll def c negate l === [(a,  1), (b,  4), (c, -2), (b,  6)]
+    mapAll def d negate l === [(a,  1), (b,  4), (c,  2), (b,  6)]
+
+prop_list_equivalence_alterFirst :: Property
+prop_list_equivalence_alterFirst = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        alterFirst = Data.AssocList.List.Equivalence.alterFirst
+        def = Data.Functor.Contravariant.defaultEquivalence
+
+    alterFirst def a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b, 6)]
+    alterFirst def b (fmap negate) l === [(a,  1), (b, -4), (c,  2), (b, 6)]
+    alterFirst def c (fmap negate) l === [(a,  1), (b,  4), (c, -2), (b, 6)]
+    alterFirst def d (fmap negate) l === [(a,  1), (b,  4), (c,  2), (b, 6)]
+
+    alterFirst def a (const Nothing) l === [        (b, 4), (c, 2), (b, 6)]
+    alterFirst def b (const Nothing) l === [(a, 1),         (c, 2), (b, 6)]
+    alterFirst def c (const Nothing) l === [(a, 1), (b, 4),         (b, 6)]
+    alterFirst def d (const Nothing) l === [(a, 1), (b, 4), (c, 2), (b, 6)]
+
+    alterFirst def a (const (Just 0)) l === [(a, 0), (b, 4), (c, 2), (b, 6)]
+    alterFirst def b (const (Just 0)) l === [(a, 1), (b, 0), (c, 2), (b, 6)]
+    alterFirst def c (const (Just 0)) l === [(a, 1), (b, 4), (c, 0), (b, 6)]
+    alterFirst def d (const (Just 0)) l === [(a, 1), (b, 4), (c, 2), (b, 6), (d, 0)]
+
+prop_list_equivalence_alterAll :: Property
+prop_list_equivalence_alterAll = withTests 1 $ property $ do
+
+    let
+        l = [(a, 1), (b, 4), (c, 2), (b, 6)]
+        alterAll = Data.AssocList.List.Equivalence.alterAll
+        def = Data.Functor.Contravariant.defaultEquivalence
+
+    alterAll def a (fmap negate) l === [(a, -1), (b,  4), (c,  2), (b,  6)]
+    alterAll def b (fmap negate) l === [(a,  1), (b, -4), (b, -6), (c,  2)]
+    alterAll def c (fmap negate) l === [(a,  1), (b,  4), (c, -2), (b,  6)]
+    alterAll def d (fmap negate) l === [(a,  1), (b,  4), (c,  2), (b,  6)]
+
+    alterAll def a (const []) l === [        (b, 4), (c, 2), (b, 6)]
+    alterAll def b (const []) l === [(a, 1),         (c, 2)        ]
+    alterAll def c (const []) l === [(a, 1), (b, 4),         (b, 6)]
+    alterAll def d (const []) l === [(a, 1), (b, 4), (c, 2), (b, 6)]
+
+    alterAll def a (const [8,9]) l === [(a, 8), (a, 9), (b, 4), (c, 2), (b, 6)]
+    alterAll def b (const [8,9]) l === [(a, 1), (b, 8), (b, 9), (c, 2)]
+    alterAll def c (const [8,9]) l === [(a, 1), (b, 4), (c, 8), (c, 9), (b, 6)]
+    alterAll def d (const [8,9]) l === [(a, 1), (b, 4), (c, 2), (b, 6), (d, 8), (d, 9)]
+
 
 --------------------------------------------------------------------------------
 --  Data.AssocList.List.Ord
