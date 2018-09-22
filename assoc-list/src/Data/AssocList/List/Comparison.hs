@@ -1,5 +1,15 @@
 module Data.AssocList.List.Comparison
-    ( sortKeys
+    (
+
+    -- * Related modules
+    -- $relatedModules
+
+    -- * Sorting
+      sortKeys
+
+    -- * Re-exports
+    , Comparison (..)
+
     ) where
 
 import Data.AssocList.List.Type
@@ -9,6 +19,12 @@ import qualified Data.List
 
 -- contravariant
 import Data.Functor.Contravariant (Comparison (..), contramap)
+
+-- $relatedModules
+-- A module that is a lot like this one:
+--
+-- * "Data.AssocList.List.Ord" - Functions on 'AssocList's that
+--   make use of an 'Ord' constraint on the type of the keys
 
 sortKeys :: Comparison a -> AssocList a b -> AssocList a b
 sortKeys cmp =
