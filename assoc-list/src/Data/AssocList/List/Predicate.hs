@@ -1,3 +1,5 @@
+-- | Functions on 'AssocList's that involve 'Predicate's on the keys.
+
 module Data.AssocList.List.Predicate where
 
 import Data.AssocList.List.Type
@@ -12,11 +14,28 @@ import Data.Functor.Contravariant (Predicate (..))
 -- $setup
 -- >>> import Prelude ((==))
 
+-- | Obtain the first value associated with a key that satisfies a
+-- predicate, if such a mapping is present.
+--
+-- >>> lookupFirst (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- Just 2
+--
+-- The result is 'Nothing' if no key in the list satisfies the predicate.
+--
+-- >>> lookupFirst (Predicate (== 'D')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- Nothing
+
 lookupFirst :: Predicate a -> AssocList a b -> Maybe b
 lookupFirst _key []                =  Nothing
 lookupFirst key ((x, y) : xys)
         | getPredicate key x       =  Just y
         | otherwise                =  lookupFirst key xys
+
+-- | Obtain all values associated with keys that satisfy the predicate,
+-- in the order in which the mappings appear in the list.
+--
+-- >>> lookupAll (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
+-- [2,3,3]
 
 lookupAll :: Predicate a -> AssocList a b -> [b]
 lookupAll _key []                  =  []
@@ -24,11 +43,35 @@ lookupAll key ((x, y) : xys)
         | getPredicate key x       =  y : lookupAll key xys
         | otherwise                =      lookupAll key xys
 
+-- | Produce a modified version of the association list in which the
+-- first occurrence of a key that satisfied the predicate has been removed.
+--
+-- >>> removeFirst (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- [('A',1),('B',3),('C',4)]
+--
+-- If no key in the list satisfies the predicate, then the original list
+-- is returned.
+--
+-- >>> removeFirst (Predicate (== 'C')) [('A',1), ('B',2), ('B',3)]
+-- [('A',1),('B',2),('B',3)]
+
 removeFirst :: Predicate a -> AssocList a b -> AssocList a b
 removeFirst _key l@[]              =  l
 removeFirst key (xy@(x, y) : xys)
         | getPredicate key x       =  xys
         | otherwise                =  xy : removeFirst key xys
+
+-- | Produce a modified version of the association list in which all
+-- occurrences of keys that satisfy the predicate have been removed.
+--
+-- >>> removeAll (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- [('A',1),('C',4)]
+--
+-- If the key is not present in the mapping, then the original list
+-- is returned.
+--
+-- >>> removeAll (Predicate (== 'C')) [('A',1), ('B',2), ('B',3)]
+-- [('A',1),('B',2),('B',3)]
 
 removeAll :: Predicate a -> AssocList a b -> AssocList a b
 removeAll _key l@[]                =  l
@@ -36,7 +79,16 @@ removeAll key (xy@(x, y) : xys)
         | getPredicate key x       =       removeAll key xys
         | otherwise                =  xy : removeAll key xys
 
--- | @'partition' x l = ('lookupAll' x l, 'removeAll' x l)@
+-- | Produces a tuple of two results:
+--
+-- 1. All values associated with keys that satify the predicate
+-- 2. All of the other key-value pairs
+--
+-- @'partition' x l = ('lookupAll' x l, 'removeAll' x l)@
+--
+-- >>> partition (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4), ('B',3)]
+-- ([2,3,3],[('A',1),('C',4)])
+
 partition :: Predicate a -> AssocList a b -> ([b], AssocList a b)
 partition _key l@[]                = ([], l)
 partition key (xy@(x, y) : xys)
@@ -44,6 +96,29 @@ partition key (xy@(x, y) : xys)
         | otherwise                = (    yes , xy : no)
   where
     (yes, no) = partition key xys
+
+-- | Produces a tuple of two results:
+--
+-- 1. The longest prefix of the association list that does /not/ contain
+--    a key satisfying the predict
+-- 2. The remainder of the list
+--
+-- >>> break (Predicate (== 'B')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- ([('A',1)],[('B',2),('B',3),('C',4)])
+--
+-- If the key of the first mapping in the list satisfies the predicate,
+-- then the first part of the resulting tuple is empty, and the second
+-- part of the result is the entire list.
+--
+-- >>> break (Predicate (== 'A')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- ([],[('A',1),('B',2),('B',3),('C',4)])
+--
+-- If no key in the list satisfies the predicate, then the first part of
+-- the resulting tuple is the entire list, and the second part of the
+-- result is empty.
+--
+-- >>> break (Predicate (== 'D')) [('A',1), ('B',2), ('B',3), ('C',4)]
+-- ([('A',1),('B',2),('B',3),('C',4)],[])
 
 break :: Predicate a -> AssocList a b -> (AssocList a b, AssocList a b)
 break key = Data.List.break (\(x, y) -> getPredicate key x)

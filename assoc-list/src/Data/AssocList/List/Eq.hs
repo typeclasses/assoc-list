@@ -147,7 +147,7 @@ partition key (xy@(x, y) : xys)
 -- >>> break 'B' [('A',1), ('B',2), ('B',3), ('C',4)]
 -- ([('A',1)],[('B',2),('B',3),('C',4)])
 --
--- If the first element of the list contains the given key, then the first
+-- If the first mapping in the list contains the given key, then the first
 -- part of the resulting tuple is empty, and the second part of the result
 -- is the entire list.
 --
