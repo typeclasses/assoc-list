@@ -7,9 +7,6 @@ module Data.AssocList.List.Comparison
     -- * Sorting
       sortKeys
 
-    -- * Re-exports
-    , Comparison (..)
-
     ) where
 
 import Data.AssocList.List.Type

@@ -19,10 +19,6 @@ module Data.AssocList.List.Equivalence
     , break
     , breakPartition
 
-    -- * Re-exports
-    , AssocList
-    , Equivalence (..)
-
     ) where
 
 import Data.AssocList.Exception

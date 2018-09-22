@@ -19,10 +19,6 @@ module Data.AssocList.List.Predicate
     , break
     , breakPartition
 
-    -- * Re-exports
-    , AssocList
-    , Predicate (..)
-
     ) where
 
 import Data.AssocList.List.Type

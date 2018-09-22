@@ -24,10 +24,6 @@ module Data.AssocList.List.Eq
     , (!)
     , (!?)
 
-    -- * Re-exports
-    , AssocList
-    , Eq (..)
-
     ) where
 
 import Data.AssocList.Exception

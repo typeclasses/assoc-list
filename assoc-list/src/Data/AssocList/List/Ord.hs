@@ -7,17 +7,13 @@ module Data.AssocList.List.Ord
     -- * Sorting
       sortKeys
 
-    -- * Re-exports
-    , Ord (..)
-    , Ordering (..)
-
     ) where
 
 import Data.AssocList.List.Type
 
 -- base
 import qualified Data.List
-import Prelude (Ord (..), Ordering (..), Maybe (..))
+import Prelude (Ord (..), Maybe (..))
 
 -- $relatedModules
 -- A module that is a lot like this one:
