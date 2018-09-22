@@ -1,3 +1,6 @@
+-- | Functions on 'AssocList's that make use of a 'Comparison'
+-- on the keys.
+
 module Data.AssocList.List.Comparison
     (
 

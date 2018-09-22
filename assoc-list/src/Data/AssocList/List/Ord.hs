@@ -1,3 +1,6 @@
+-- | Functions on 'AssocList's that make use of an 'Ord' constraint
+-- on the type of the keys.
+
 module Data.AssocList.List.Ord
     (
 
