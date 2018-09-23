@@ -2,11 +2,15 @@ name: assoc-list
 version: 0.1.0.0
 category: Data
 
-synopsis: Association lists
+synopsis: Association lists (lists of tuples)
 
-description: An association list conceptually signifies
-             a mapping, but is represented as a list
-             (of key-value pairs).
+description: An association list conceptually signifies a mapping,
+             but is represented as a list (of key-value pairs).
+             .
+             This package defines an association list as a type
+             alias for a list of tuples.
+             .
+             > type AssocList a b = [(a, b)]
 
 homepage:    https://github.com/typeclasses/assoc-list
 bug-reports: https://github.com/typeclasses/assoc-list/issues
