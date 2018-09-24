@@ -1,12 +1,36 @@
 module Data.AssocList.List.Concept
-    ( AssocList
+    (
+
+    -- * Association list type
+      AssocList
+
+    -- * Related modules
+    -- $relatedModules
+
+    -- * Exception
     , MissingAssocListKey (..)
+
     ) where
 
 -- base
 import Control.Exception (Exception)
 import Data.Typeable     (Typeable)
 import Prelude           (Eq, Show)
+
+-- $relatedModules
+-- * "Data.AssocList.List.Eq" - Functions that involve @Eq@ constraints
+--   on the keys
+-- * "Data.AssocList.List.Equivalence" - Most of the same functions as
+--   the @Eq@ module, but with an @Equivalence@ parameter instead of an
+--   @Eq@ constraint
+-- * "Data.AssocList.List.Predicate" - Most of the same functions as the
+--   @Eq@ module, but specifying keys using a @Predicate@ rather than a
+--   particular key
+-- * "Data.AssocList.List.Ord" - Functions that involve @Ord@ constraints
+--   on the keys
+-- * "Data.AssocList.List.Comparison" - The same functions as the @Ord@
+--   module, but with a @Comparison@ parameter instead of an @Ord@
+--   constraint.
 
 type AssocList a b = [(a, b)]
 

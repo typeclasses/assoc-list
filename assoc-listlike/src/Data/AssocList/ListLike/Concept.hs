@@ -1,8 +1,17 @@
 {-# LANGUAGE ConstraintKinds, FlexibleContexts #-}
 
 module Data.AssocList.ListLike.Concept
-    ( AssocList
+    (
+
+    -- * Association list type
+      AssocList
+
+    -- * Related modules
+    -- $relatedModules
+
+    -- * Exception
     , MissingAssocListKey (..)
+
     ) where
 
 -- base
@@ -12,6 +21,21 @@ import Prelude           (Eq, Show)
 
 -- ListLike
 import Data.ListLike (ListLike)
+
+-- $relatedModules
+-- * "Data.AssocList.ListLike.Eq" - Functions that involve @Eq@
+--   constraints on the keys
+-- * "Data.AssocList.ListLike.Equivalence" - Most of the same functions
+--   as the @Eq@ module, but with an @Equivalence@ parameter instead of
+--   an @Eq@ constraint
+-- * "Data.AssocList.ListLike.Predicate" - Most of the same functions as
+--   the @Eq@ module, but specifying keys using a @Predicate@ rather
+--   than a particular key
+-- * "Data.AssocList.ListLike.Ord" - Functions that involve @Ord@
+--   constraints on the keys
+-- * "Data.AssocList.ListLike.Comparison" - The same functions as the
+--   @Ord@ module, but with a @Comparison@ parameter instead of an @Ord@
+--   constraint.
 
 type AssocList l a b = ListLike l (a, b)
 
