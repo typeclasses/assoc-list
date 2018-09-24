@@ -40,13 +40,13 @@ For example, compare the following two type signatures for `mapFirst`:
   * For example, `lookupFirst :: Equivalence a -> a -> AssocList a b -> Maybe b`
   * An example use case for this module might be the list of [header fields in an HTTP message](https://tools.ietf.org/html/rfc7230#section-3.2), which is an association list where the keys are case-insensitive
 * `Data.AssocList.[___].Predicate`
-  * Most of the same functions as the `Eq` module, but specifying keys using a `Predicate` rather than a particular key.
+  * Most of the same functions as the `Eq` module, but specifying keys using a `Predicate` rather than a particular key
   * For example, `lookupFirst :: Predicate a -> AssocList a b -> Maybe b`
 * `Data.AssocList.[___].Ord`
   * Functions that involve `Ord` constraints on the keys
   * For example, `sortKeys :: Ord a => AssocList a b -> AssocList a b`
 * `Data.AssocList.[___].Comparison`
-  * The same functions as the `Ord` module, but with a `Comparison` parameter instead of an `Ord` constraint.
+  * The same functions as the `Ord` module, but with a `Comparison` parameter instead of an `Ord` constraint
   * For example, `sortKeys :: Comparison a -> AssocList a b -> AssocList a b`
 
 ## Related libraries
