@@ -2,10 +2,12 @@
 
 An *association list* is a simple representation of a key-value mapping as a list of key-value pairs. The `assoc-list` package provides functions for working with these kinds of data structures.
 
-## Packages in this project:
+## Packages
 
-* `assoc-list`
-* `assoc-listlike`
+This project consists of two packages whose contents are nearly the same:
+
+* [`assoc-list`](http://hackage.haskell.org/package/assoc-list) - defines an association list as `[(a, b)]`
+* [`assoc-listlike`](http://hackage.haskell.org/package/assoc-listlike) - defines an asssociation list more generally as `ListLike l (a, b) => l`
 
 ## Related libraries
 
