@@ -1,5 +1,5 @@
 name: assoc-listlike
-version: 0.1.0.0
+version: 0.1.0.1
 category: Data
 synopsis: Association lists (list-like collections of tuples)
 
