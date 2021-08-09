@@ -61,5 +61,4 @@ test-suite hedgehog
       assoc-listlike
     , base >=4.7 && <5
     , contravariant
-    , doctest
     , hedgehog
