@@ -25,4 +25,9 @@ constraints ghc = catMaybes
         GHC_8_8  -> Just "4.13.*"
         GHC_8_10 -> Just "4.14.*"
         GHC_9_0  -> Just "4.15.*"
+    , "contravariant" .= case ghc of
+        GHC_8_6  -> Just "1.5"
+        GHC_8_8  -> Just "1.5.2"
+        GHC_8_10 -> Just "1.5.4"
+        GHC_9_0  -> Just "1.5.5"
     ]
