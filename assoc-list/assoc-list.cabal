@@ -66,4 +66,4 @@ test-suite hedgehog
 
   build-depends:
       assoc-list
-    , hedgehog
+    , hedgehog ^>= 1.0

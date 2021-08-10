@@ -44,6 +44,12 @@ constraints ghc = catMaybes
         GHC_8_10 -> Just "1.5.4"
         GHC_9_0  -> Just "1.5.5"
         _        -> Nothing
+    , "hedgehog" .= case ghc of
+        GHC_8_6  -> Just "1.0"
+        GHC_8_8  -> Just "1.0.1"
+        GHC_8_10 -> Just "1.0.3"
+        GHC_9_0  -> Just "1.0.5"
+        _        -> Nothing
     , "ListLike" .= case ghc of
         GHC_8_6  -> Just "4.6"
         GHC_8_8  -> Just "4.6.3"
