@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "./assoc-list/src"
+      component: "lib:assoc-list"
+    - path: "./assoc-list/test"
+      component: "test:test-assoc-list"
+    - path: "./assoc-listlike/src"
+      component: "lib:assoc-listlike"
+    - path: "./assoc-listlike/test"
+      component: "test:test-assoc-listlike"
