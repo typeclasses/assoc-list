@@ -1,0 +1,7 @@
+packages: assoc-list, assoc-listlike
+
+constraints:
+    base == 4.15.*
+  , contravariant == 1.5.5
+  , hedgehog == 1.0.5
+  , ListLike == 4.7.4

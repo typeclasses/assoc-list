@@ -1,0 +1,4 @@
+packages: assoc-list, assoc-listlike
+
+constraints:
+    base == 4.11.*
