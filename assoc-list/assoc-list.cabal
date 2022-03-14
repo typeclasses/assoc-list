@@ -56,7 +56,7 @@ library
     , Data.AssocList.List.Ord
     , Data.AssocList.List.Predicate
 
-test-suite hedgehog
+test-suite test-assoc-list
   import: base
   hs-source-dirs: test
   type: exitcode-stdio-1.0
